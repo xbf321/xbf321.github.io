@@ -1,0 +1,330 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</script>
+  <meta charset="utf-8">
+  
+  <title>学习树莓派（Pi 3 Model B） | X栢放</title>
+  <meta name="author" content="兴百放">
+
+  <!-- 设置description -->
+  
+      <meta name="description" content="&lt;p&gt;介绍如何安装系统，设置Wifi 等等。&lt;/p&gt;">
+  
+
+  <meta name="description" content="介绍如何安装系统，设置Wifi 等等。" >
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="学习树莓派（Pi 3 Model B）"/>
+  <meta property="og:site_name" content="X栢放"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  <link rel="alternate" href="/atom.xml" title="X栢放" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <!--SEO之将标签设为关键词-->
+  
+  
+      <meta name="keywords" content="raspberry,mac">  
+  
+
+<!--网站头像
+<link href="/img/xbf321.ico" rel="icon">-->
+
+
+<!-- 七牛jQuery -->
+<script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
+
+<!-- 七牛jQuery请求失败时，则请求本网站挂载的jQuery -->
+<script>
+window.jQuery || document.write("<script src=/js/jquery.min.js><\/script>")
+</script>
+
+<!-- 加载gitment的css和js文件 -->
+<link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script> 
+<script>
+window.Gitment || document.write("<script src=/js/gitment.js><\/script>")
+</script>
+
+<!-- 使用不蒜子统计博客访问量 -->
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">X栢放</a></h1>
+  <h2><a href="/">喜欢简单美</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">博客列表</a></li>
+    
+      <li><a href="/emotion/about-blog.html">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+
+  
+
+  <div class="post-content">
+
+    <!-- 关于页面没有标题 -->
+    
+     <header>
+     <div style="display: flex;">
+      
+        <div class="icon"></div>
+        <time datetime="2017-05-31T16:00:00.000Z"><a href="/tech/raspbian-start.html">2017-06-01</a></time>  
+      
+      
+      <span id="busuanzi_container_page_pv" style="margin-bottom: 5px; line-height: 1; font-size: 0.9em;" >&#160;&#160;&#160;&#160;&#160;阅读  <span id="busuanzi_value_page_pv"></span></span>
+      
+     </div>
+      
+  
+    <h1 class="title">学习树莓派（Pi 3 Model B）</h1>
+  
+
+    </header>
+    
+
+ 
+
+    <div class="entry">
+      
+        <p>介绍如何安装系统，设置Wifi 等等。</p>
+<a id="more"></a>
+<h2 id="把系统复制到-TF-卡中"><a href="#把系统复制到-TF-卡中" class="headerlink" title="把系统复制到 TF 卡中"></a>把系统复制到 TF 卡中</h2><p>插入SD卡，使用 <em>df</em> 查看当前已经挂载的卷</p>
+<figure class="highlight lsl"><table><tr><td class="code"><pre><div class="line">$ df</div><div class="line">Filesystem    <span class="number">512</span>-blocks      Used Available Capacity  iused   ifree %iused  Mounted on</div><div class="line">/dev/disk1     <span class="number">233269248</span> <span class="number">218788512</span>  <span class="number">13968736</span>    <span class="number">94</span>% <span class="number">27412562</span> <span class="number">1746092</span>   <span class="number">94</span>%   /</div><div class="line">devfs                <span class="number">374</span>       <span class="number">374</span>         <span class="number">0</span>   <span class="number">100</span>%      <span class="number">648</span>       <span class="number">0</span>  <span class="number">100</span>%   /dev</div><div class="line">map -hosts             <span class="number">0</span>         <span class="number">0</span>         <span class="number">0</span>   <span class="number">100</span>%        <span class="number">0</span>       <span class="number">0</span>  <span class="number">100</span>%   /net</div><div class="line">map auto_home          <span class="number">0</span>         <span class="number">0</span>         <span class="number">0</span>   <span class="number">100</span>%        <span class="number">0</span>       <span class="number">0</span>  <span class="number">100</span>%   /home</div><div class="line">/dev/disk2s1    <span class="number">31100416</span>      <span class="number">4992</span>  <span class="number">31095424</span>     <span class="number">1</span>%        <span class="number">0</span>       <span class="number">0</span>  <span class="number">100</span>%   /Volumes/Pi</div></pre></td></tr></table></figure>
+<p>因为已经命名了SD卡为 Pi ，所以SD卡的分区对应的设备文件为：/dev/disk2s1</p>
+<p>使用diskutil unmount卸载</p>
+<figure class="highlight applescript"><table><tr><td class="code"><pre><div class="line">$ diskutil unmount /dev/disk2s1</div><div class="line">Volume Pi <span class="keyword">on</span> disk2s1 unmounted</div></pre></td></tr></table></figure>
+<p>diskutil list 确认设备 我买的是16G的卡</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><div class="line">$ diskutil list</div><div class="line">/dev/disk2</div><div class="line">   #:                      <span class="built_in"> TYPE </span>NAME                    SIZE       IDENTIFIER</div><div class="line">   0:     FDisk_partition_scheme                        <span class="number">*15</span>.9 GB    disk2</div><div class="line">   1:                 DOS_FAT_32 Pi                      15.9 GB    disk2s1</div></pre></td></tr></table></figure>
+<p>使用dd命令将系统镜像写入<br>PS /dev/disk2s1是分区，/dev/disk2是块设备，/dev/rdisk2是原始字符设备</p>
+<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><div class="line">$ dd bs=<span class="number">4</span>m <span class="keyword">if</span>=<span class="literal">pi</span>.img <span class="keyword">of</span>=/dev/rdisk2</div><div class="line"><span class="number">781</span>+<span class="number">1</span> records <span class="keyword">in</span></div><div class="line"><span class="number">781</span>+<span class="number">1</span> records out</div><div class="line"><span class="number">3276800000</span> <span class="keyword">bytes</span> transferred <span class="keyword">in</span> <span class="number">194.134151</span> <span class="built_in">secs</span> (<span class="number">16879050</span> <span class="keyword">bytes</span>/<span class="built_in">sec</span>)</div></pre></td></tr></table></figure>
+<p>至此，SD卡上已经刷入了 Raspbian 系统</p>
+<p>再用diskutil unmountDisk卸载设备</p>
+<figure class="highlight applescript"><table><tr><td class="code"><pre><div class="line">$ diskutil unmountDisk /dev/disk2</div><div class="line">Unmount <span class="keyword">of</span> all volumes <span class="keyword">on</span> disk2 was successful</div></pre></td></tr></table></figure>
+<h2 id="远程-ss"><a href="#远程-ss" class="headerlink" title="远程 ss"></a>远程 ss</h2><p>默认系统是关闭 ssh ，系统烧录到 <strong>SD</strong> 卡后，系统会提示 <strong>拒绝链接</strong>，解决办法是，在根目录下新建一个空的 <code>ssh</code> 文件，即可。</p>
+<figure class="highlight ebnf"><table><tr><td class="code"><pre><div class="line"><span class="attribute">touch ssh</span></div></pre></td></tr></table></figure>
+<h2 id="修改国内源"><a href="#修改国内源" class="headerlink" title="修改国内源"></a>修改国内源</h2><p>修改 sources.list</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><div class="line">sudo <span class="keyword">vim</span> /etc/apt/sources.<span class="keyword">list</span></div></pre></td></tr></table></figure>
+<p>把原来的注释，或者备份下源文件都可以，我注释掉了。填入国内源：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">deb http:<span class="regexp">//mi</span>rrors.neusoft.edu.cn<span class="regexp">/raspbian/</span>raspbian jessie main contrib non-free rpi</div></pre></td></tr></table></figure>
+<p>修改 raspi.list</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><div class="line">sudo vim /etc/apt/sources<span class="selector-class">.list</span><span class="selector-class">.d</span>/raspi.list</div></pre></td></tr></table></figure>
+<p>填入：</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">deb http:<span class="regexp">//mi</span>rrors.ustc.edu.cn<span class="regexp">/archive.raspberrypi.org/</span>debian<span class="regexp">/ jessie main ui</span></div></pre></td></tr></table></figure>
+<h2 id="更新软件源和软件"><a href="#更新软件源和软件" class="headerlink" title="更新软件源和软件"></a>更新软件源和软件</h2><figure class="highlight routeros"><table><tr><td class="code"><pre><div class="line">sudo apt-<span class="builtin-name">get</span> update</div><div class="line">sudo apt-<span class="builtin-name">get</span> upgrade</div></pre></td></tr></table></figure>
+<h2 id="启用-root-账号"><a href="#启用-root-账号" class="headerlink" title="启用 root 账号"></a>启用 root 账号</h2><p>root 默认没有密码，但是用户锁定了。我们需要重新开启 root 账号</p>
+<ol>
+<li><p>root 账号设置密码，会提示输入两次</p>
+<figure class="highlight ebnf"><table><tr><td class="code"><pre><div class="line"><span class="attribute">sudo passwd root</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>启用 root 账号</p>
+</li>
+</ol>
+<figure class="highlight ada"><table><tr><td class="code"><pre><div class="line">sudo passwd <span class="comment">--unlock root</span></div></pre></td></tr></table></figure>
+<p>提示：passwd: password expiry information changed. 说明还需要修改配置文件。</p>
+<ol>
+<li>更改配置文件</li>
+</ol>
+<figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">sudo vi <span class="regexp">/etc/</span>ssh<span class="regexp">/sshd_config</span></div></pre></td></tr></table></figure>
+<p>找到： PermitRootLogin without-passwor 更改为：PermitRootLogin yes</p>
+<ol>
+<li>reboot 重启系统</li>
+</ol>
+<figure class="highlight ebnf"><table><tr><td class="code"><pre><div class="line"><span class="attribute">sudo reboot</span></div></pre></td></tr></table></figure>
+<h2 id="设置-WiFi"><a href="#设置-WiFi" class="headerlink" title="设置 WiFi"></a>设置 WiFi</h2><figure class="highlight vala"><table><tr><td class="code"><pre><div class="line"><span class="meta"># 搜索 无线 网络信号，找到 ESSID</span></div><div class="line">iwlist scan</div><div class="line"></div><div class="line"><span class="meta"># 编辑配置文件</span></div><div class="line">sudo vim /etc/wpa_supplicant/wpa_supplicant.conf    </div><div class="line"><span class="meta"># 在该文件最后添加下面的话</span></div><div class="line">network=&#123;</div><div class="line">  ssid=<span class="string">"WIFINAME"</span></div><div class="line">  psk=<span class="string">"password"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta"># 引号部分分别为wifi的名字和密码</span></div><div class="line"><span class="meta"># 保存文件后几秒钟应该就会自动连接到该wifi</span></div><div class="line"><span class="meta"># 查看是否连接成功</span></div><div class="line">ifconfig wlan0</div><div class="line"></div><div class="line"><span class="meta"># 停用 wifi</span></div><div class="line">ifdown wlan0</div><div class="line"><span class="meta"># 启用 wifi</span></div><div class="line">ifup wlan0</div></pre></td></tr></table></figure>
+        <!--版权声明-->
+        <br />
+<pre class="copyright">
+版权声明:
+转载时请注明作者<b><a href="https://xingbaifang.com" target="_blank" title="兴百放">兴百放</a></b>以及本文地址：
+<b><a href="https://xingbaifang.com/tech/raspbian-start.html" target="_blank" title="学习树莓派（Pi 3 Model B）">https://xingbaifang.com/tech/raspbian-start.html</a></b>
+</pre>
+
+<style>
+.copyright * {
+  box-sizing: border-box;
+}
+</style>
+      
+    </div>
+
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/tech/">tech</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/raspberry/">raspberry</a>, <a href="/tags/mac/">mac</a>
+  </div>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+
+</article>
+
+
+<!-- 使用Gitmemt作为评论系统 -->
+
+  <div id="gitment"></div>
+
+<!-- 主页不要加载gitment -->
+
+
+<script>
+var gitment = new Gitment({
+  owner: 'xbf321',
+  repo: 'blog',
+  oauth: {
+    client_id: 'd135b713eba74d758bbc',
+    client_secret: 'a944f19a6902d57871c5d18871d66aa2a0637019',
+  },
+})
+gitment.render('gitment')
+</script>
+ 
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.baidu.com/baidu";
+    document.search_form.word.value = document.search_form.word.value + " site:xingbaifang.com";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="text" name="word" results="0" placeholder="百度站内搜索" onblur="this.value=''">
+    </form>
+</div>
+
+  <div class="widget tag">
+	<h3 class="title">博客统计</h3>
+	<ul class="entry" style="font-size:13px">
+		<li>
+		    <span class="post-count" style="font-family:Lucida; font-size:16px; color:red">24</span> 篇博客
+		</li>
+		<li>
+			<span id="busuanzi_container_site_pv" style="font-family:Lucida; font-size:16px; color:red"><span id="busuanzi_value_site_pv"></span></span> 位访客
+		</li>
+	</ul>
+</div>
+
+  <!--标签-->
+
+<div class="widget tagcloud">
+	<h3 class="title">标签</h3>
+  		<div class="entry">
+    	<a href="/tags/php/" style="font-size: 10px; color: #0f0">php</a> <a href="/tags/随笔/" style="font-size: 10px; color: #0f0">随笔</a> <a href="/tags/git/" style="font-size: 25px; color: #f00">git</a> <a href="/tags/nginx/" style="font-size: 10px; color: #0f0">nginx</a> <a href="/tags/centos/" style="font-size: 25px; color: #f00">centos</a> <a href="/tags/nodejs/" style="font-size: 10px; color: #0f0">nodejs</a> <a href="/tags/frp/" style="font-size: 10px; color: #0f0">frp</a> <a href="/tags/apache/" style="font-size: 10px; color: #0f0">apache</a> <a href="/tags/raspberry/" style="font-size: 25px; color: #f00">raspberry</a> <a href="/tags/aria/" style="font-size: 10px; color: #0f0">aria</a> <a href="/tags/samba/" style="font-size: 10px; color: #0f0">samba</a> <a href="/tags/mac/" style="font-size: 10px; color: #0f0">mac</a> <a href="/tags/shell/" style="font-size: 10px; color: #0f0">shell</a>
+  		</div>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新博客</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/tech/install-php-and-apache-in-centos.html">在 Centos 中编译安装 php 和 Apache</a>
+      </li>
+    
+      <li>
+        <a href="/tech/frp.html">frp 配置和使用</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-samba.html">树莓派安装 Samba</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-aria2.html">树莓派安装 Aria2</a>
+      </li>
+    
+      <li>
+        <a href="/tech/shell-learning.html">Shell 学习</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-start.html">学习树莓派（Pi 3 Model B）</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nginx-in-centos.html">在 Centos 中安装 nginx</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nodejs-in-centos.html">在 Centos 中编译安装 nodejs</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-04.html">锻炼记录(2017-04)</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-03.html">锻炼记录(2017-03)</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div align="center">
+  Copyright &copy; 2015-2017 theme by <a href="https://kiwenlau.com/" target="_blank">KiwenLau</a>
+</div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<!--返回顶部-->
+<!--返回顶部-->
+<div id="totop" style="position:fixed;bottom:10%;right:10%;cursor:pointer;">
+<a title="返回顶部"><img src="/img/totop.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+</body>
+</html>

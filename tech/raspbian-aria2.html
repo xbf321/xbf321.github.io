@@ -1,0 +1,314 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</script>
+  <meta charset="utf-8">
+  
+  <title>树莓派安装 Aria2 | X栢放</title>
+  <meta name="author" content="兴百放">
+
+  <!-- 设置description -->
+  
+      <meta name="description" content="&lt;p&gt;目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。&lt;/p&gt;">
+  
+
+  <meta name="description" content="目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。" >
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="树莓派安装 Aria2"/>
+  <meta property="og:site_name" content="X栢放"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  <link rel="alternate" href="/atom.xml" title="X栢放" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <!--SEO之将标签设为关键词-->
+  
+  
+      <meta name="keywords" content="raspberry,aria">  
+  
+
+<!--网站头像
+<link href="/img/xbf321.ico" rel="icon">-->
+
+
+<!-- 七牛jQuery -->
+<script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
+
+<!-- 七牛jQuery请求失败时，则请求本网站挂载的jQuery -->
+<script>
+window.jQuery || document.write("<script src=/js/jquery.min.js><\/script>")
+</script>
+
+<!-- 加载gitment的css和js文件 -->
+<link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script> 
+<script>
+window.Gitment || document.write("<script src=/js/gitment.js><\/script>")
+</script>
+
+<!-- 使用不蒜子统计博客访问量 -->
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">X栢放</a></h1>
+  <h2><a href="/">喜欢简单美</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">博客列表</a></li>
+    
+      <li><a href="/emotion/about-blog.html">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+
+  
+
+  <div class="post-content">
+
+    <!-- 关于页面没有标题 -->
+    
+     <header>
+     <div style="display: flex;">
+      
+        <div class="icon"></div>
+        <time datetime="2017-07-20T16:00:00.000Z"><a href="/tech/raspbian-aria2.html">2017-07-21</a></time>  
+      
+      
+      <span id="busuanzi_container_page_pv" style="margin-bottom: 5px; line-height: 1; font-size: 0.9em;" >&#160;&#160;&#160;&#160;&#160;阅读  <span id="busuanzi_value_page_pv"></span></span>
+      
+     </div>
+      
+  
+    <h1 class="title">树莓派安装 Aria2</h1>
+  
+
+    </header>
+    
+
+ 
+
+    <div class="entry">
+      
+        <p>目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。</p>
+<a id="more"></a>
+<h1 id="1-安装并配置-aria2"><a href="#1-安装并配置-aria2" class="headerlink" title="1. 安装并配置 aria2"></a>1. 安装并配置 aria2</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight routeros"><table><tr><td class="code"><pre><div class="line">sudo apt-<span class="builtin-name">get</span> install aria2</div></pre></td></tr></table></figure>
+<h2 id="创建配置文件夹"><a href="#创建配置文件夹" class="headerlink" title="创建配置文件夹"></a>创建配置文件夹</h2><figure class="highlight arduino"><table><tr><td class="code"><pre><div class="line">sudo <span class="built_in">mkdir</span> /etc/aria2</div></pre></td></tr></table></figure>
+<h2 id="创建-session-和配置文件"><a href="#创建-session-和配置文件" class="headerlink" title="创建 session 和配置文件"></a>创建 session 和配置文件</h2><figure class="highlight dts"><table><tr><td class="code"><pre><div class="line">sudo touch <span class="meta-keyword">/etc/</span>aria2/aria2.session</div><div class="line">sudo touch <span class="meta-keyword">/etc/</span>aria2/aria2.conf</div></pre></td></tr></table></figure>
+<p>编辑 <em>/etc/aria2/aria2.conf</em></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 文件保存相关 ##</span></span></div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 文件保存目录</span></div><div class="line">dir=/home/q/download</div><div class="line"><span class="meta">#</span><span class="bash"> 启用磁盘缓存, 0为禁用缓存, 需1.16以上版本, 默认:16M</span></div><div class="line">disk-cache=32M</div><div class="line"><span class="meta">#</span><span class="bash"> 断点续传</span></div><div class="line">continue=true</div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 文件预分配方式, 能有效降低磁盘碎片, 默认:prealloc</span></div><div class="line"><span class="meta">#</span><span class="bash"> 预分配所需时间: none &lt; falloc ? trunc &lt; prealloc</span></div><div class="line"><span class="meta">#</span><span class="bash"> falloc和trunc则需要文件系统和内核支持</span></div><div class="line"><span class="meta">#</span><span class="bash"> NTFS建议使用falloc, EXT3/4建议trunc, MAC 下需要注释此项</span></div><div class="line"><span class="meta">#</span><span class="bash">file-allocation=falloc</span></div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 下载连接相关 ##</span></span></div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 最大同时下载任务数, 运行时可修改, 默认:5</span></div><div class="line"><span class="meta">#</span><span class="bash">max-concurrent-downloads=5</span></div><div class="line"><span class="meta">#</span><span class="bash"> 同一服务器连接数, 添加时可指定, 默认:1</span></div><div class="line">max-connection-per-server=15</div><div class="line"><span class="meta">#</span><span class="bash"> 整体下载速度限制, 运行时可修改, 默认:0（不限制）</span></div><div class="line"><span class="meta">#</span><span class="bash">max-overall-download-limit=0</span></div><div class="line"><span class="meta">#</span><span class="bash"> 单个任务下载速度限制, 默认:0（不限制）</span></div><div class="line"><span class="meta">#</span><span class="bash">max-download-limit=0</span></div><div class="line"><span class="meta">#</span><span class="bash"> 整体上传速度限制, 运行时可修改, 默认:0（不限制）</span></div><div class="line"><span class="meta">#</span><span class="bash">max-overall-upload-limit=0</span></div><div class="line"><span class="meta">#</span><span class="bash"> 单个任务上传速度限制, 默认:0（不限制）</span></div><div class="line"><span class="meta">#</span><span class="bash">max-upload-limit=0</span></div><div class="line"><span class="meta">#</span><span class="bash"> 禁用IPv6, 默认:<span class="literal">false</span></span></div><div class="line">disable-ipv6=true</div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 最小文件分片大小, 添加时可指定, 取值范围1M -1024M, 默认:20M</span></div><div class="line"><span class="meta">#</span><span class="bash"> 假定size=10M, 文件为20MiB 则使用两个来源下载; 文件为15MiB 则使用一个来源下载</span></div><div class="line">min-split-size=10M</div><div class="line"><span class="meta">#</span><span class="bash"> 单个任务最大线程数, 添加时可指定, 默认:5</span></div><div class="line">split=10</div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 进度保存相关 ##</span></span></div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 从会话文件中读取下载任务</span></div><div class="line">input-file=/etc/aria2/aria2.session</div><div class="line"><span class="meta">#</span><span class="bash"> 在Aria2退出时保存错误的、未完成的下载任务到会话文件</span></div><div class="line">save-session=/etc/aria2/aria2.session</div><div class="line"><span class="meta">#</span><span class="bash"> 定时保存会话, 0为退出时才保存, 需1.16.1以上版本, 默认:0</span></div><div class="line">save-session-interval=60</div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># RPC相关设置 ##</span></span></div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 启用RPC, 默认:<span class="literal">false</span></span></div><div class="line">enable-rpc=true</div><div class="line"><span class="meta">#</span><span class="bash"> 允许所有来源, 默认:<span class="literal">false</span></span></div><div class="line">rpc-allow-origin-all=true</div><div class="line"><span class="meta">#</span><span class="bash"> 允许外部访问, 默认:<span class="literal">false</span></span></div><div class="line">rpc-listen-all=true</div><div class="line"><span class="meta">#</span><span class="bash"> RPC端口, 仅当默认端口被占用时修改</span></div><div class="line"><span class="meta">#</span><span class="bash"> rpc-listen-port=6800</span></div><div class="line"><span class="meta">#</span><span class="bash"> 设置的RPC授权令牌, v1.18.4新增功能, 取代 --rpc-user 和 --rpc-passwd 选项</span></div><div class="line"><span class="meta">#</span><span class="bash">rpc-secret=&lt;TOKEN&gt;</span></div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># BT/PT下载相关 ##</span></span></div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 当下载的是一个种子(以.torrent结尾)时, 自动开始BT任务, 默认:<span class="literal">true</span></span></div><div class="line"><span class="meta">#</span><span class="bash">follow-torrent=<span class="literal">true</span></span></div><div class="line"><span class="meta">#</span><span class="bash"> 客户端伪装, PT需要</span></div><div class="line">peer-id-prefix=-TR2770-</div><div class="line">user-agent=Transmission/2.77</div><div class="line"><span class="meta">#</span><span class="bash"> 强制保存会话, 即使任务已经完成, 默认:<span class="literal">false</span></span></div><div class="line"><span class="meta">#</span><span class="bash"> 较新的版本开启后会在任务完成后依然保留.aria2文件</span></div><div class="line"><span class="meta">#</span><span class="bash">force-save=<span class="literal">false</span></span></div><div class="line"><span class="meta">#</span><span class="bash"> 继续之前的BT任务时, 无需再次校验, 默认:<span class="literal">false</span></span></div><div class="line">bt-seed-unverified=true</div><div class="line"><span class="meta">#</span><span class="bash"> 保存磁力链接元数据为种子文件(.torrent文件), 默认:<span class="literal">false</span></span></div><div class="line">bt-save-metadata=true</div></pre></td></tr></table></figure>
+<p>#启动</p>
+<figure class="highlight brainfuck"><table><tr><td class="code"><pre><div class="line"><span class="comment">aria2c</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">enable</span><span class="literal">-</span><span class="comment">rpc</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">rpc</span><span class="literal">-</span><span class="comment">listen</span><span class="literal">-</span><span class="comment">all=true</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">rpc</span><span class="literal">-</span><span class="comment">allow</span><span class="literal">-</span><span class="comment">origin</span><span class="literal">-</span><span class="comment">all</span></div></pre></td></tr></table></figure>
+<h1 id="2-界面操作"><a href="#2-界面操作" class="headerlink" title="2. 界面操作"></a>2. 界面操作</h1><h2 id="YAAW"><a href="#YAAW" class="headerlink" title="YAAW"></a>YAAW</h2><p>这里使用 <a href="https://github.com/binux/yaaw" target="_blank" rel="external">YAAW</a> 界面管理远程下载，因为它支持 Chrome 插件，这样，只有服务器开通一个 rpc 的服务，就可以在任意地方下载文件了，不需要在重新部署一个 server 站点。</p>
+<h2 id="webui-aria2"><a href="#webui-aria2" class="headerlink" title="webui-aria2"></a>webui-aria2</h2><ul>
+<li>解压到  <em>/home/q/www/webui-aria2</em> 目录</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/ziahamza/</span>webui-aria2.git -d <span class="regexp">/home/</span>q<span class="regexp">/www/</span>webui-aria2</div></pre></td></tr></table></figure>
+<ul>
+<li>配置 <em>configuration.js</em></li>
+</ul>
+<p>因为我专门提供了一个对外的 <strong>RPC</strong> 服务，所以在这要修改成自己的 <strong>RPC</strong> 服务。</p>
+<ul>
+<li>本地运行</li>
+</ul>
+<figure class="highlight crmsh"><table><tr><td class="code"><pre><div class="line"><span class="keyword">node</span> <span class="title">node-server</span>.js</div></pre></td></tr></table></figure>
+<ul>
+<li>后台运行，同样使用 <strong>supervisor</strong> 管理</li>
+</ul>
+<p>在 <em>/etc/supervisor/conf.d/</em> 目录下新建 webui-aria2.conf 文件，填入一下内容：</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><div class="line"><span class="section">[program:webui-aria2]</span></div><div class="line"><span class="attr">directory</span> = /home/q/www/webui-aria2</div><div class="line"><span class="attr">command</span> = node node-server.js</div><div class="line"><span class="attr">autostart</span> = <span class="literal">true</span></div></pre></td></tr></table></figure>
+<p>重启 <strong>supervisor</strong><br><figure class="highlight ebnf"><table><tr><td class="code"><pre><div class="line"><span class="attribute">sudo systemctl restart supervisor</span></div></pre></td></tr></table></figure></p>
+
+        <!--版权声明-->
+        <br />
+<pre class="copyright">
+版权声明:
+转载时请注明作者<b><a href="https://xingbaifang.com" target="_blank" title="兴百放">兴百放</a></b>以及本文地址：
+<b><a href="https://xingbaifang.com/tech/raspbian-aria2.html" target="_blank" title="树莓派安装 Aria2">https://xingbaifang.com/tech/raspbian-aria2.html</a></b>
+</pre>
+
+<style>
+.copyright * {
+  box-sizing: border-box;
+}
+</style>
+      
+    </div>
+
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/tech/">tech</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/raspberry/">raspberry</a>, <a href="/tags/aria/">aria</a>
+  </div>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+
+</article>
+
+
+<!-- 使用Gitmemt作为评论系统 -->
+
+  <div id="gitment"></div>
+
+<!-- 主页不要加载gitment -->
+
+
+<script>
+var gitment = new Gitment({
+  owner: 'xbf321',
+  repo: 'blog',
+  oauth: {
+    client_id: 'd135b713eba74d758bbc',
+    client_secret: 'a944f19a6902d57871c5d18871d66aa2a0637019',
+  },
+})
+gitment.render('gitment')
+</script>
+ 
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.baidu.com/baidu";
+    document.search_form.word.value = document.search_form.word.value + " site:xingbaifang.com";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="text" name="word" results="0" placeholder="百度站内搜索" onblur="this.value=''">
+    </form>
+</div>
+
+  <div class="widget tag">
+	<h3 class="title">博客统计</h3>
+	<ul class="entry" style="font-size:13px">
+		<li>
+		    <span class="post-count" style="font-family:Lucida; font-size:16px; color:red">24</span> 篇博客
+		</li>
+		<li>
+			<span id="busuanzi_container_site_pv" style="font-family:Lucida; font-size:16px; color:red"><span id="busuanzi_value_site_pv"></span></span> 位访客
+		</li>
+	</ul>
+</div>
+
+  <!--标签-->
+
+<div class="widget tagcloud">
+	<h3 class="title">标签</h3>
+  		<div class="entry">
+    	<a href="/tags/php/" style="font-size: 10px; color: #0f0">php</a> <a href="/tags/随笔/" style="font-size: 10px; color: #0f0">随笔</a> <a href="/tags/git/" style="font-size: 25px; color: #f00">git</a> <a href="/tags/nginx/" style="font-size: 10px; color: #0f0">nginx</a> <a href="/tags/centos/" style="font-size: 25px; color: #f00">centos</a> <a href="/tags/nodejs/" style="font-size: 10px; color: #0f0">nodejs</a> <a href="/tags/frp/" style="font-size: 10px; color: #0f0">frp</a> <a href="/tags/apache/" style="font-size: 10px; color: #0f0">apache</a> <a href="/tags/raspberry/" style="font-size: 25px; color: #f00">raspberry</a> <a href="/tags/aria/" style="font-size: 10px; color: #0f0">aria</a> <a href="/tags/samba/" style="font-size: 10px; color: #0f0">samba</a> <a href="/tags/mac/" style="font-size: 10px; color: #0f0">mac</a> <a href="/tags/shell/" style="font-size: 10px; color: #0f0">shell</a>
+  		</div>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新博客</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/tech/install-php-and-apache-in-centos.html">在 Centos 中编译安装 php 和 Apache</a>
+      </li>
+    
+      <li>
+        <a href="/tech/frp.html">frp 配置和使用</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-samba.html">树莓派安装 Samba</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-aria2.html">树莓派安装 Aria2</a>
+      </li>
+    
+      <li>
+        <a href="/tech/shell-learning.html">Shell 学习</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-start.html">学习树莓派（Pi 3 Model B）</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nginx-in-centos.html">在 Centos 中安装 nginx</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nodejs-in-centos.html">在 Centos 中编译安装 nodejs</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-04.html">锻炼记录(2017-04)</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-03.html">锻炼记录(2017-03)</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div align="center">
+  Copyright &copy; 2015-2017 theme by <a href="https://kiwenlau.com/" target="_blank">KiwenLau</a>
+</div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<!--返回顶部-->
+<!--返回顶部-->
+<div id="totop" style="position:fixed;bottom:10%;right:10%;cursor:pointer;">
+<a title="返回顶部"><img src="/img/totop.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+</body>
+</html>

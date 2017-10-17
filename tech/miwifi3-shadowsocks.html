@@ -1,0 +1,309 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</script>
+  <meta charset="utf-8">
+  
+  <title>小米路由器3安装 shadowshocks | X栢放</title>
+  <meta name="author" content="兴百放">
+
+  <!-- 设置description -->
+  
+      <meta name="description" content="&lt;blockquote&gt;
+&lt;p&gt;目前已经有大神搞出个UI界面安装 shadowshocks，所以这篇文章大家只看前三步就行（开启ss权限）。传送门：&lt;a href=&#34;http://bbs.xiaomi.cn/t-12975500&#34; target=&#34;_blank&#34; rel=&#34;external&#34;&gt;http://bbs.xiaomi.cn/t-12975500&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;">
+  
+
+  <meta name="description" content="
+目前已经有大神搞出个UI界面安装 shadowshocks，所以这篇文章大家只看前三步就行（开启ss权限）。传送门：http://bbs.xiaomi.cn/t-12975500
+" >
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="小米路由器3安装 shadowshocks"/>
+  <meta property="og:site_name" content="X栢放"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  <link rel="alternate" href="/atom.xml" title="X栢放" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <!--SEO之将标签设为关键词-->
+  
+  
+      <meta name="keywords" content="">  
+  
+
+<!--网站头像
+<link href="/img/xbf321.ico" rel="icon">-->
+
+
+<!-- 七牛jQuery -->
+<script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
+
+<!-- 七牛jQuery请求失败时，则请求本网站挂载的jQuery -->
+<script>
+window.jQuery || document.write("<script src=/js/jquery.min.js><\/script>")
+</script>
+
+<!-- 加载gitment的css和js文件 -->
+<link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script> 
+<script>
+window.Gitment || document.write("<script src=/js/gitment.js><\/script>")
+</script>
+
+<!-- 使用不蒜子统计博客访问量 -->
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">X栢放</a></h1>
+  <h2><a href="/">喜欢简单美</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">博客列表</a></li>
+    
+      <li><a href="/emotion/about-blog.html">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+
+  
+
+  <div class="post-content">
+
+    <!-- 关于页面没有标题 -->
+    
+     <header>
+     <div style="display: flex;">
+      
+        <div class="icon"></div>
+        <time datetime="2016-09-08T16:00:00.000Z"><a href="/tech/miwifi3-shadowsocks.html">2016-09-09</a></time>  
+      
+      
+      <span id="busuanzi_container_page_pv" style="margin-bottom: 5px; line-height: 1; font-size: 0.9em;" >&#160;&#160;&#160;&#160;&#160;阅读  <span id="busuanzi_value_page_pv"></span></span>
+      
+     </div>
+      
+  
+    <h1 class="title">小米路由器3安装 shadowshocks</h1>
+  
+
+    </header>
+    
+
+ 
+
+    <div class="entry">
+      
+        <blockquote>
+<p>目前已经有大神搞出个UI界面安装 shadowshocks，所以这篇文章大家只看前三步就行（开启ss权限）。传送门：<a href="http://bbs.xiaomi.cn/t-12975500" target="_blank" rel="external">http://bbs.xiaomi.cn/t-12975500</a></p>
+</blockquote>
+<a id="more"></a>
+<p>================== 华丽的分割线 ===================</p>
+<p>前段时间，因工作需要，买了一台小米路由器3，号称同时能连接一百多个客户端。</p>
+<p>之前用的是极路由，但是只要客户端一多，就及其不稳定，这时，正当小米推出路由器3，就好不犹豫购置一台，本人对小米的产品还是比较看好，家里用的就是一台小米mini，至今没有撒娇过。</p>
+<p>用极路由的时候，对他的插件模式还是比较认同的，一般的小白，点点就能安装，很方便，这点小米路由器还有待学习。</p>
+<p>拿到小米路由器3之后，总以为里边有 shadowsocks 插件呢，但是很遗憾，啥都装不了，除了能用用迅雷下载，这叫我整天用 google 的人怎么过。</p>
+<p>下面就是我的折腾之旅。</p>
+<h2 id="第一步，系统ROM稳定版更新为开发版"><a href="#第一步，系统ROM稳定版更新为开发版" class="headerlink" title="第一步，系统ROM稳定版更新为开发版"></a>第一步，系统ROM稳定版更新为开发版</h2><p>查看系统，路由器型号是R3,系统ROM版本是稳定版 2.x.x(具体版本忘了)。稳定版肯定是不行，关闭了好多功能 ，只有开发版才有权限使用某些功能。</p>
+<p>1) 登陆 <a href="http://www1.miwifi.com/miwifi_download.html" target="_blank" rel="external">http://www1.miwifi.com/miwifi_download.html</a> 选择ROM板块，下载对应的开发版（2.13.33），是一个 xxxx.bin 的文件包。<br>2) 登陆小米路由器，选择手动升级，选择刚刚下载的 xxxx.bin 文件包。<br>3) 稍等片刻，系统ROM版本就成开发版了。进入到 常用设置 -&gt; 系统状态，会发现，系统版本有可以升级，升级到2.13.75。</p>
+<p>注意:升级需谨慎，只要升级到开发版，官网就不保修了。</p>
+<h2 id="第二步，开启SS权限，路由器也是系统，只有能进系统，就好说了。"><a href="#第二步，开启SS权限，路由器也是系统，只有能进系统，就好说了。" class="headerlink" title="第二步，开启SS权限，路由器也是系统，只有能进系统，就好说了。"></a>第二步，开启SS权限，路由器也是系统，只有能进系统，就好说了。</h2><p>1) 登陆 <a href="https://d.miwifi.com/rom/ssh" target="_blank" rel="external">https://d.miwifi.com/rom/ssh</a> 下载对应的 SS 工具包（前提是先绑定到你的小米账户），因为我有两个小米路由器，所以就会显示两个工具包。<br>2) 记住 root 密码，这个密码就是 SS 登陆密码。<br>3) 按照工具包使用方法操作，官网写的是“小米路由器3即将支持”，但是实际上可以。</p>
+<pre><code>3.1 请将下载的工具包bin文件复制到U盘（FAT/FAT32格式）的根目录下，保证文件名为miwifi_ssh.bin；
+3.2 断开小米路由器的电源，将U盘插入USB接口；
+3.3 按住reset按钮之后重新接入电源，指示灯变为黄色闪烁状态即可松开reset键；
+3.4 等待3-5秒后安装完成之后，小米路由器会自动重启，之后您就可以尽情折腾啦 ：）
+</code></pre><h2 id="第三步，安装-shadowshocks-插件（此脚本已作废）"><a href="#第三步，安装-shadowshocks-插件（此脚本已作废）" class="headerlink" title="第三步，安装 shadowshocks 插件（此脚本已作废）"></a>第三步，安装 shadowshocks 插件（此脚本已作废）</h2><p>现在网上针对R3版本的 shadowshocks 插件很少，大部分都是mini或青春版的，但是功夫不负有心人，找到一个，在这谢谢这为仁兄的无私奉献。</p>
+<p>1) 登陆到小米路由器，密码就是第二步中的 root 密码，不是登陆小米路由器的密码，千万不要搞错了。<br>2) 复制以下命令到窗口中并回车。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><div class="line"><span class="keyword">cd</span> <span class="string">/tmp</span> &amp;&amp; rm -rf *<span class="string">.sh</span> &amp;&amp; <span class="keyword">cd</span> <span class="string">/tmp</span> &amp;&amp; rm -rf *<span class="string">.sh</span> &amp;&amp; wget http:<span class="string">//okss.tk/xiaomi/miwifi.sh</span> &amp;&amp; chmod +x miwifi.sh &amp;&amp; sh <span class="string">./miwifi.sh</span> &amp;&amp; rm -rf *<span class="string">.sh</span></div></pre></td></tr></table></figure>
+<p>3) 里边有6个选项，选择第5项（安装r3版ss插件）。<br>4) 输入SS的服务器IP，密码，端口，加密方式。<br>5) 最后提示“Shadowsocks安装成功！”。</p>
+<p>最后，访问 google ，终于又能科学上网了。</p>
+<p>参考：<a href="http://www.miui.com/thread-4133822-1-1.html" target="_blank" rel="external">http://www.miui.com/thread-4133822-1-1.html</a></p>
+
+        <!--版权声明-->
+        <br />
+<pre class="copyright">
+版权声明:
+转载时请注明作者<b><a href="https://xingbaifang.com" target="_blank" title="兴百放">兴百放</a></b>以及本文地址：
+<b><a href="https://xingbaifang.com/tech/miwifi3-shadowsocks.html" target="_blank" title="小米路由器3安装 shadowshocks">https://xingbaifang.com/tech/miwifi3-shadowsocks.html</a></b>
+</pre>
+
+<style>
+.copyright * {
+  box-sizing: border-box;
+}
+</style>
+      
+    </div>
+
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/tech/">tech</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+
+</article>
+
+
+<!-- 使用Gitmemt作为评论系统 -->
+
+  <div id="gitment"></div>
+
+<!-- 主页不要加载gitment -->
+
+
+<script>
+var gitment = new Gitment({
+  owner: 'xbf321',
+  repo: 'blog',
+  oauth: {
+    client_id: 'd135b713eba74d758bbc',
+    client_secret: 'a944f19a6902d57871c5d18871d66aa2a0637019',
+  },
+})
+gitment.render('gitment')
+</script>
+ 
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.baidu.com/baidu";
+    document.search_form.word.value = document.search_form.word.value + " site:xingbaifang.com";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="text" name="word" results="0" placeholder="百度站内搜索" onblur="this.value=''">
+    </form>
+</div>
+
+  <div class="widget tag">
+	<h3 class="title">博客统计</h3>
+	<ul class="entry" style="font-size:13px">
+		<li>
+		    <span class="post-count" style="font-family:Lucida; font-size:16px; color:red">24</span> 篇博客
+		</li>
+		<li>
+			<span id="busuanzi_container_site_pv" style="font-family:Lucida; font-size:16px; color:red"><span id="busuanzi_value_site_pv"></span></span> 位访客
+		</li>
+	</ul>
+</div>
+
+  <!--标签-->
+
+<div class="widget tagcloud">
+	<h3 class="title">标签</h3>
+  		<div class="entry">
+    	<a href="/tags/php/" style="font-size: 10px; color: #0f0">php</a> <a href="/tags/随笔/" style="font-size: 10px; color: #0f0">随笔</a> <a href="/tags/git/" style="font-size: 25px; color: #f00">git</a> <a href="/tags/nginx/" style="font-size: 10px; color: #0f0">nginx</a> <a href="/tags/centos/" style="font-size: 25px; color: #f00">centos</a> <a href="/tags/nodejs/" style="font-size: 10px; color: #0f0">nodejs</a> <a href="/tags/frp/" style="font-size: 10px; color: #0f0">frp</a> <a href="/tags/apache/" style="font-size: 10px; color: #0f0">apache</a> <a href="/tags/raspberry/" style="font-size: 25px; color: #f00">raspberry</a> <a href="/tags/aria/" style="font-size: 10px; color: #0f0">aria</a> <a href="/tags/samba/" style="font-size: 10px; color: #0f0">samba</a> <a href="/tags/mac/" style="font-size: 10px; color: #0f0">mac</a> <a href="/tags/shell/" style="font-size: 10px; color: #0f0">shell</a>
+  		</div>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新博客</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/tech/install-php-and-apache-in-centos.html">在 Centos 中编译安装 php 和 Apache</a>
+      </li>
+    
+      <li>
+        <a href="/tech/frp.html">frp 配置和使用</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-samba.html">树莓派安装 Samba</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-aria2.html">树莓派安装 Aria2</a>
+      </li>
+    
+      <li>
+        <a href="/tech/shell-learning.html">Shell 学习</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-start.html">学习树莓派（Pi 3 Model B）</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nginx-in-centos.html">在 Centos 中安装 nginx</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nodejs-in-centos.html">在 Centos 中编译安装 nodejs</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-04.html">锻炼记录(2017-04)</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-03.html">锻炼记录(2017-03)</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div align="center">
+  Copyright &copy; 2015-2017 theme by <a href="https://kiwenlau.com/" target="_blank">KiwenLau</a>
+</div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<!--返回顶部-->
+<!--返回顶部-->
+<div id="totop" style="position:fixed;bottom:10%;right:10%;cursor:pointer;">
+<a title="返回顶部"><img src="/img/totop.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+</body>
+</html>

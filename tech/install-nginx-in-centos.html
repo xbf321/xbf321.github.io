@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</script>
+  <meta charset="utf-8">
+  
+  <title>在 Centos 中安装 nginx | X栢放</title>
+  <meta name="author" content="兴百放">
+
+  <!-- 设置description -->
+  
+      <meta name="description" content="&lt;p&gt;且看且珍惜。&lt;/p&gt;">
+  
+
+  <meta name="description" content="且看且珍惜。" >
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="在 Centos 中安装 nginx"/>
+  <meta property="og:site_name" content="X栢放"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  <link rel="alternate" href="/atom.xml" title="X栢放" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <!--SEO之将标签设为关键词-->
+  
+  
+      <meta name="keywords" content="nginx,centos">  
+  
+
+<!--网站头像
+<link href="/img/xbf321.ico" rel="icon">-->
+
+
+<!-- 七牛jQuery -->
+<script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
+
+<!-- 七牛jQuery请求失败时，则请求本网站挂载的jQuery -->
+<script>
+window.jQuery || document.write("<script src=/js/jquery.min.js><\/script>")
+</script>
+
+<!-- 加载gitment的css和js文件 -->
+<link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script> 
+<script>
+window.Gitment || document.write("<script src=/js/gitment.js><\/script>")
+</script>
+
+<!-- 使用不蒜子统计博客访问量 -->
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">X栢放</a></h1>
+  <h2><a href="/">喜欢简单美</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">博客列表</a></li>
+    
+      <li><a href="/emotion/about-blog.html">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+
+  
+
+  <div class="post-content">
+
+    <!-- 关于页面没有标题 -->
+    
+     <header>
+     <div style="display: flex;">
+      
+        <div class="icon"></div>
+        <time datetime="2017-05-17T16:00:00.000Z"><a href="/tech/install-nginx-in-centos.html">2017-05-18</a></time>  
+      
+      
+      <span id="busuanzi_container_page_pv" style="margin-bottom: 5px; line-height: 1; font-size: 0.9em;" >&#160;&#160;&#160;&#160;&#160;阅读  <span id="busuanzi_value_page_pv"></span></span>
+      
+     </div>
+      
+  
+    <h1 class="title">在 Centos 中安装 nginx</h1>
+  
+
+    </header>
+    
+
+ 
+
+    <div class="entry">
+      
+        <p>且看且珍惜。</p>
+<a id="more"></a>
+<h2 id="准备依赖包"><a href="#准备依赖包" class="headerlink" title="准备依赖包"></a>准备依赖包</h2><figure class="highlight sql"><table><tr><td class="code"><pre><div class="line">sudo yum <span class="keyword">install</span> gcc-c++</div><div class="line">sudo yum -y <span class="keyword">install</span> zlib zlib-devel openssl openssl<span class="comment">--devel pcre pcre-devel</span></div></pre></td></tr></table></figure>
+<h2 id="检查是否已经安装"><a href="#检查是否已经安装" class="headerlink" title="检查是否已经安装"></a>检查是否已经安装</h2><figure class="highlight routeros"><table><tr><td class="code"><pre><div class="line"><span class="builtin-name">find</span> -name nginx</div></pre></td></tr></table></figure>
+<h2 id="卸载原有-nginx"><a href="#卸载原有-nginx" class="headerlink" title="卸载原有 nginx"></a>卸载原有 nginx</h2><figure class="highlight routeros"><table><tr><td class="code"><pre><div class="line">sudo yum <span class="builtin-name">remove</span> nginx</div></pre></td></tr></table></figure>
+<h2 id="安装-nginx"><a href="#安装-nginx" class="headerlink" title="安装 nginx"></a>安装 nginx</h2><figure class="highlight cmake"><table><tr><td class="code"><pre><div class="line">sudo yum <span class="keyword">install</span> nginx</div></pre></td></tr></table></figure>
+<h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><figure class="highlight jboss-cli"><table><tr><td class="code"><pre><div class="line">  启动：<span class="string">./nginx</span> </div><div class="line">  停止：<span class="string">./nginx</span> -s stop </div><div class="line">  重启：<span class="string">./nginx</span> -s <span class="keyword">reload</span> </div><div class="line">  测试：<span class="string">./nginx</span> -t</div><div class="line">  说明：nginx命令在nginx/sbin目录下,需要sudo权限。 要加上sudo来启动nginx。</div><div class="line">       其中的<span class="keyword">reload</span>可以重新加载配置文件，stop停止ngnix，-t用来检查配置文件的完整性和正确性。</div><div class="line">执行完成命令后，如果没有任何提示则可以基本确认命令执行成功了（linux中，没有消息就是好消息）</div></pre></td></tr></table></figure>
+<h2 id="启动过程中遇到的问题"><a href="#启动过程中遇到的问题" class="headerlink" title="启动过程中遇到的问题"></a>启动过程中遇到的问题</h2><p>首先执行以下命令，查看 nginx 缺失的包</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">ldd $(which <span class="regexp">/home/</span>q<span class="regexp">/nginx/</span>sbin<span class="regexp">/nginx)</span></div></pre></td></tr></table></figure>
+<p>显示：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><div class="line">   linux-vdso<span class="selector-class">.so</span>.<span class="number">1</span> =&gt;  (<span class="number">0</span>x00007ffecaca4000)</div><div class="line">libcrypt<span class="selector-class">.so</span>.<span class="number">1</span> =&gt; /lib64/libcrypt<span class="selector-class">.so</span>.<span class="number">1</span> (<span class="number">0</span>x00007f546037e000)</div><div class="line">libluajit-<span class="number">5.1</span><span class="selector-class">.so</span>.<span class="number">2</span> =&gt; /home/q/luajit/lib/libluajit-<span class="number">5.1</span><span class="selector-class">.so</span>.<span class="number">2</span> (<span class="number">0</span>x00007f546010f000)</div><div class="line">libm<span class="selector-class">.so</span>.<span class="number">6</span> =&gt; /lib64/libm<span class="selector-class">.so</span>.<span class="number">6</span> (<span class="number">0</span>x00007f545fe0d000)</div><div class="line">libpcre<span class="selector-class">.so</span>.<span class="number">0</span> =&gt; /lib64/libpcre<span class="selector-class">.so</span>.<span class="number">0</span> (<span class="number">0</span>x00007f545fbac000)</div><div class="line">libssl<span class="selector-class">.so</span>.<span class="number">6</span> =&gt; not found</div><div class="line">libcrypto<span class="selector-class">.so</span>.<span class="number">6</span> =&gt; not found</div><div class="line">libdl<span class="selector-class">.so</span>.<span class="number">2</span> =&gt; /lib64/libdl<span class="selector-class">.so</span>.<span class="number">2</span> (<span class="number">0</span>x00007f545f9a7000)</div><div class="line">libz<span class="selector-class">.so</span>.<span class="number">1</span> =&gt; /lib64/libz<span class="selector-class">.so</span>.<span class="number">1</span> (<span class="number">0</span>x00007f545f790000)</div><div class="line">libc<span class="selector-class">.so</span>.<span class="number">6</span> =&gt; /lib64/libc<span class="selector-class">.so</span>.<span class="number">6</span> (<span class="number">0</span>x00007f545f3ce000)</div><div class="line">libfreebl3<span class="selector-class">.so</span> =&gt; /lib64/libfreebl3<span class="selector-class">.so</span> (<span class="number">0</span>x00007f545f1cb000)</div><div class="line">libgcc_s<span class="selector-class">.so</span>.<span class="number">1</span> =&gt; /lib64/libgcc_s<span class="selector-class">.so</span>.<span class="number">1</span> (<span class="number">0</span>x00007f545efb4000)</div><div class="line">/lib64/ld-linux-x86-<span class="number">64</span><span class="selector-class">.so</span>.<span class="number">2</span> (<span class="number">0</span>x00007f54605bd000)</div><div class="line">libpthread<span class="selector-class">.so</span>.<span class="number">0</span> =&gt; /lib64/libpthread<span class="selector-class">.so</span>.<span class="number">0</span> (<span class="number">0</span>x00007f545ed98000)</div></pre></td></tr></table></figure>
+<p>可知，缺少 libssl.so.6 和 libcrypto.so.6 两个 link，首先安装这两个包</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">yum</span> <span class="selector-tag">install</span> <span class="selector-tag">libssl</span><span class="selector-class">.so</span><span class="selector-class">.6</span></div><div class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">yum</span> <span class="selector-tag">install</span> <span class="selector-tag">libcrypto</span><span class="selector-class">.so</span><span class="selector-class">.6</span></div></pre></td></tr></table></figure>
+<p>如果已安装，进入到 <em>/lib64</em> 目录下，建立 link</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">ln</span> <span class="selector-tag">-s</span> <span class="selector-tag">libssl</span><span class="selector-class">.so</span><span class="selector-class">.1</span><span class="selector-class">.0</span><span class="selector-class">.1e</span> <span class="selector-tag">libssl</span><span class="selector-class">.so</span><span class="selector-class">.6</span></div><div class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">ln</span> <span class="selector-tag">-s</span> <span class="selector-tag">libcrypto</span><span class="selector-class">.so</span><span class="selector-class">.1</span><span class="selector-class">.0</span><span class="selector-class">.1e</span> <span class="selector-tag">libcrypto</span><span class="selector-class">.so</span><span class="selector-class">.6</span></div></pre></td></tr></table></figure>
+<p>如果提示以下信息</p>
+<blockquote>
+<p>./nginx: error while loading shared libraries: libpcre.so.0: cannot open shared object file: No such file or directory</p>
+</blockquote>
+<p>解决方案：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><div class="line">sudo link /usr/lib64/libpcre<span class="selector-class">.so</span>.<span class="number">1</span> /lib64/libpcre<span class="selector-class">.so</span>.<span class="number">0</span></div></pre></td></tr></table></figure>
+
+        <!--版权声明-->
+        <br />
+<pre class="copyright">
+版权声明:
+转载时请注明作者<b><a href="https://xingbaifang.com" target="_blank" title="兴百放">兴百放</a></b>以及本文地址：
+<b><a href="https://xingbaifang.com/tech/install-nginx-in-centos.html" target="_blank" title="在 Centos 中安装 nginx">https://xingbaifang.com/tech/install-nginx-in-centos.html</a></b>
+</pre>
+
+<style>
+.copyright * {
+  box-sizing: border-box;
+}
+</style>
+      
+    </div>
+
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/tech/">tech</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/nginx/">nginx</a>, <a href="/tags/centos/">centos</a>
+  </div>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+
+</article>
+
+
+<!-- 使用Gitmemt作为评论系统 -->
+
+  <div id="gitment"></div>
+
+<!-- 主页不要加载gitment -->
+
+
+<script>
+var gitment = new Gitment({
+  owner: 'xbf321',
+  repo: 'blog',
+  oauth: {
+    client_id: 'd135b713eba74d758bbc',
+    client_secret: 'a944f19a6902d57871c5d18871d66aa2a0637019',
+  },
+})
+gitment.render('gitment')
+</script>
+ 
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.baidu.com/baidu";
+    document.search_form.word.value = document.search_form.word.value + " site:xingbaifang.com";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="text" name="word" results="0" placeholder="百度站内搜索" onblur="this.value=''">
+    </form>
+</div>
+
+  <div class="widget tag">
+	<h3 class="title">博客统计</h3>
+	<ul class="entry" style="font-size:13px">
+		<li>
+		    <span class="post-count" style="font-family:Lucida; font-size:16px; color:red">24</span> 篇博客
+		</li>
+		<li>
+			<span id="busuanzi_container_site_pv" style="font-family:Lucida; font-size:16px; color:red"><span id="busuanzi_value_site_pv"></span></span> 位访客
+		</li>
+	</ul>
+</div>
+
+  <!--标签-->
+
+<div class="widget tagcloud">
+	<h3 class="title">标签</h3>
+  		<div class="entry">
+    	<a href="/tags/php/" style="font-size: 10px; color: #0f0">php</a> <a href="/tags/随笔/" style="font-size: 10px; color: #0f0">随笔</a> <a href="/tags/git/" style="font-size: 25px; color: #f00">git</a> <a href="/tags/nginx/" style="font-size: 10px; color: #0f0">nginx</a> <a href="/tags/centos/" style="font-size: 25px; color: #f00">centos</a> <a href="/tags/nodejs/" style="font-size: 10px; color: #0f0">nodejs</a> <a href="/tags/frp/" style="font-size: 10px; color: #0f0">frp</a> <a href="/tags/apache/" style="font-size: 10px; color: #0f0">apache</a> <a href="/tags/raspberry/" style="font-size: 25px; color: #f00">raspberry</a> <a href="/tags/aria/" style="font-size: 10px; color: #0f0">aria</a> <a href="/tags/samba/" style="font-size: 10px; color: #0f0">samba</a> <a href="/tags/mac/" style="font-size: 10px; color: #0f0">mac</a> <a href="/tags/shell/" style="font-size: 10px; color: #0f0">shell</a>
+  		</div>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新博客</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/tech/install-php-and-apache-in-centos.html">在 Centos 中编译安装 php 和 Apache</a>
+      </li>
+    
+      <li>
+        <a href="/tech/frp.html">frp 配置和使用</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-samba.html">树莓派安装 Samba</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-aria2.html">树莓派安装 Aria2</a>
+      </li>
+    
+      <li>
+        <a href="/tech/shell-learning.html">Shell 学习</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-start.html">学习树莓派（Pi 3 Model B）</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nginx-in-centos.html">在 Centos 中安装 nginx</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nodejs-in-centos.html">在 Centos 中编译安装 nodejs</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-04.html">锻炼记录(2017-04)</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-03.html">锻炼记录(2017-03)</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div align="center">
+  Copyright &copy; 2015-2017 theme by <a href="https://kiwenlau.com/" target="_blank">KiwenLau</a>
+</div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<!--返回顶部-->
+<!--返回顶部-->
+<div id="totop" style="position:fixed;bottom:10%;right:10%;cursor:pointer;">
+<a title="返回顶部"><img src="/img/totop.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+</body>
+</html>

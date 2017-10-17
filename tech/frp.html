@@ -1,0 +1,328 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</script>
+  <meta charset="utf-8">
+  
+  <title>frp 配置和使用 | X栢放</title>
+  <meta name="author" content="兴百放">
+
+  <!-- 设置description -->
+  
+      <meta name="description" content="&lt;h1 id=&#34;frp-作用&#34;&gt;&lt;a href=&#34;#frp-作用&#34; class=&#34;headerlink&#34; title=&#34;frp 作用&#34;&gt;&lt;/a&gt;frp 作用&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;利用处于内网或防火墙后的机器，对外网环境提供 http 或 https 服务。&lt;/li&gt;
+&lt;li&gt;对于 http, https 服务支持基于域名的虚拟主机，支持自定义域名绑定，使多个域名可以共用一个80端口。&lt;/li&gt;
+&lt;li&gt;利用处于内网或防火墙后的机器，对外网环境提供 tcp 和 udp 服务，例如在家里通过 ssh 访问处于公司内网环境内的主机。&lt;/li&gt;
+&lt;/ul&gt;">
+  
+
+  <meta name="description" content="frp 作用
+利用处于内网或防火墙后的机器，对外网环境提供 http 或 https 服务。
+对于 http, https 服务支持基于域名的虚拟主机，支持自定义域名绑定，使多个域名可以共用一个80端口。
+利用处于内网或防火墙后的机器，对外网环境提供 tcp 和 udp 服务，例如在家里通过 ssh 访问处于公司内网环境内的主机。
+" >
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="frp 配置和使用"/>
+  <meta property="og:site_name" content="X栢放"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  <link rel="alternate" href="/atom.xml" title="X栢放" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <!--SEO之将标签设为关键词-->
+  
+  
+      <meta name="keywords" content="frp">  
+  
+
+<!--网站头像
+<link href="/img/xbf321.ico" rel="icon">-->
+
+
+<!-- 七牛jQuery -->
+<script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
+
+<!-- 七牛jQuery请求失败时，则请求本网站挂载的jQuery -->
+<script>
+window.jQuery || document.write("<script src=/js/jquery.min.js><\/script>")
+</script>
+
+<!-- 加载gitment的css和js文件 -->
+<link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script> 
+<script>
+window.Gitment || document.write("<script src=/js/gitment.js><\/script>")
+</script>
+
+<!-- 使用不蒜子统计博客访问量 -->
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">X栢放</a></h1>
+  <h2><a href="/">喜欢简单美</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">博客列表</a></li>
+    
+      <li><a href="/emotion/about-blog.html">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+
+  
+
+  <div class="post-content">
+
+    <!-- 关于页面没有标题 -->
+    
+     <header>
+     <div style="display: flex;">
+      
+        <div class="icon"></div>
+        <time datetime="2017-07-20T16:00:00.000Z"><a href="/tech/frp.html">2017-07-21</a></time>  
+      
+      
+      <span id="busuanzi_container_page_pv" style="margin-bottom: 5px; line-height: 1; font-size: 0.9em;" >&#160;&#160;&#160;&#160;&#160;阅读  <span id="busuanzi_value_page_pv"></span></span>
+      
+     </div>
+      
+  
+    <h1 class="title">frp 配置和使用</h1>
+  
+
+    </header>
+    
+
+ 
+
+    <div class="entry">
+      
+        <h1 id="frp-作用"><a href="#frp-作用" class="headerlink" title="frp 作用"></a>frp 作用</h1><ul>
+<li>利用处于内网或防火墙后的机器，对外网环境提供 http 或 https 服务。</li>
+<li>对于 http, https 服务支持基于域名的虚拟主机，支持自定义域名绑定，使多个域名可以共用一个80端口。</li>
+<li>利用处于内网或防火墙后的机器，对外网环境提供 tcp 和 udp 服务，例如在家里通过 ssh 访问处于公司内网环境内的主机。</li>
+</ul>
+<a id="more"></a>
+<p>详细参见<a href="https://github.com/fatedier/frp/blob/master/README_zh.md" target="_blank" rel="external">官网</a></p>
+<h1 id="服务端配置（公网）"><a href="#服务端配置（公网）" class="headerlink" title="服务端配置（公网）"></a>服务端配置（公网）</h1><h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>使用 <strong>wget</strong> 指令下载到我们制定的目录中，如：<em>/home/tools/frp</em></p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">sudo wget https:<span class="regexp">//gi</span>thub.com<span class="regexp">/fatedier/</span>frp<span class="regexp">/releases/</span>download<span class="regexp">/v0.13.0/</span>frp_0.<span class="number">13.0</span>_linux_amd64.tar.gz</div></pre></td></tr></table></figure>
+<h2 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h2><figure class="highlight css"><table><tr><td class="code"><pre><div class="line"><span class="selector-tag">sudo</span> <span class="selector-tag">tar</span> <span class="selector-tag">-zxvf</span> <span class="selector-tag">frp_0</span><span class="selector-class">.13</span><span class="selector-class">.0_linux_amd64</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></div></pre></td></tr></table></figure>
+<p>因为作为服务端，可以把客户端文件删掉，使用 <em>rm</em> 指令。<br><figure class="highlight stata"><table><tr><td class="code"><pre><div class="line">sudo <span class="keyword">rm</span> -f frpc</div><div class="line">sudo <span class="keyword">rm</span> -f frpc.ini</div></pre></td></tr></table></figure></p>
+<h2 id="编辑-frps-ini-配置文件"><a href="#编辑-frps-ini-配置文件" class="headerlink" title="编辑 frps.ini 配置文件"></a>编辑 <em>frps.ini</em> 配置文件</h2><p>可以参考官网范例。<br>我这删掉了一些不用的内容，是个简化版的配置文件。<br><figure class="highlight ini"><table><tr><td class="code"><pre><div class="line"><span class="section">[common]</span></div><div class="line"><span class="attr">bind_port</span> = <span class="number">7000</span></div><div class="line"><span class="attr">vhost_http_port</span> = <span class="number">80</span></div><div class="line"><span class="attr">dashboard_port</span> = <span class="number">7500</span></div><div class="line"><span class="attr">dashboard_user</span> = xxx</div><div class="line"><span class="attr">dashboard_pwd</span> = xxx</div><div class="line"><span class="attr">log_file</span> = /home/tools/frp/frps.log</div><div class="line"><span class="attr">subdomain_host</span> = xxx.me</div><div class="line"></div><div class="line"><span class="section">[ssh]</span></div><div class="line"><span class="attr">listen_port</span> = <span class="number">422</span></div><div class="line"><span class="attr">auth_token</span> = xxx</div><div class="line"></div><div class="line"><span class="section">[nas]</span></div><div class="line"><span class="attr">type</span> = http</div><div class="line"><span class="attr">auth_token</span> = xxx</div><div class="line"></div><div class="line"><span class="section">[nas-rpc]</span></div><div class="line"><span class="attr">type</span> = http</div><div class="line"><span class="attr">auth_token</span> = xxx</div></pre></td></tr></table></figure></p>
+<h2 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h2><figure class="highlight jboss-cli"><table><tr><td class="code"><pre><div class="line"><span class="string">./frps</span> -c <span class="string">./frps.ini</span></div></pre></td></tr></table></figure>
+<h2 id="Systemd-管理"><a href="#Systemd-管理" class="headerlink" title="Systemd 管理"></a>Systemd 管理</h2><p>因为我的公网机器是 Centos ，所以用的是 Systemd 管理。</p>
+<p>编写 <em>frp service</em> 文件</p>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><div class="line">sudo vim /usr/<span class="class"><span class="keyword">lib</span>/<span class="title">systemd</span>/<span class="title">system</span>/<span class="title">frps</span>.<span class="title">service</span></span></div></pre></td></tr></table></figure>
+<p>内容如下：</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><div class="line"><span class="section">[Unit]</span></div><div class="line"><span class="attr">Description</span>=frps</div><div class="line"><span class="attr">After</span>=network.target</div><div class="line"></div><div class="line"><span class="section">[Service]</span></div><div class="line"><span class="attr">TimeoutStartSec</span>=<span class="number">30</span></div><div class="line"><span class="attr">ExecStart</span>=/home/tools/frp/frps -c /home/tools/frp/frps.ini</div><div class="line"><span class="attr">ExecStop</span>=/bin/kill <span class="variable">$MAINPID</span></div><div class="line"></div><div class="line"><span class="section">[Install]</span></div><div class="line"><span class="attr">WantedBy</span>=multi-user.target</div></pre></td></tr></table></figure>
+<p>开机启动和查看状态</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><div class="line">systemctl <span class="builtin-name">enable</span> frps</div><div class="line">systemctl start frps</div><div class="line">systemctl status frps</div></pre></td></tr></table></figure>
+<h1 id="客户端配置（内网）"><a href="#客户端配置（内网）" class="headerlink" title="客户端配置（内网）"></a>客户端配置（内网）</h1><p>因为 frp 下载自带客户端和服务端，所以这里，可以参考上面的。</p>
+<p>下载之后，同样删掉 <strong>服务端</strong> 文件。</p>
+<h2 id="编辑-fprc-ini-配置文件"><a href="#编辑-fprc-ini-配置文件" class="headerlink" title="编辑 fprc.ini 配置文件"></a>编辑 <em>fprc.ini</em> 配置文件</h2><figure class="highlight ini"><table><tr><td class="code"><pre><div class="line"><span class="section">[common]</span></div><div class="line"><span class="attr">server_addr</span> = <span class="number">1.1</span>.<span class="number">1.1</span></div><div class="line"><span class="attr">server_port</span> = <span class="number">7000</span></div><div class="line"><span class="attr">log_file</span> = /home/q/tools/frp/frpc.log</div><div class="line"><span class="attr">auth_token</span> = xxx</div><div class="line"></div><div class="line"><span class="section">[ssh]</span></div><div class="line"><span class="attr">type</span> = tcp</div><div class="line"><span class="attr">local_ip</span> = <span class="number">127.0</span>.<span class="number">0.1</span></div><div class="line"><span class="attr">local_port</span> = <span class="number">22</span></div><div class="line"><span class="attr">remote_port</span> = <span class="number">422</span></div><div class="line"></div><div class="line"><span class="section">[nas]</span></div><div class="line"><span class="attr">type</span> = http</div><div class="line"><span class="attr">local_ip</span> = <span class="number">127.0</span>.<span class="number">0.1</span></div><div class="line"><span class="attr">local_port</span> = <span class="number">8888</span></div><div class="line"><span class="attr">subdomain</span> = nas</div><div class="line"></div><div class="line"><span class="section">[nas-rpc]</span></div><div class="line"><span class="attr">type</span> = http</div><div class="line"><span class="attr">local_ip</span> = <span class="number">127.0</span>.<span class="number">0.1</span></div><div class="line"><span class="attr">local_port</span> = <span class="number">6800</span></div><div class="line"><span class="attr">subdomain</span> = rpc</div></pre></td></tr></table></figure>
+<blockquote>
+<p>客户端和服务器端要一一对应，比如 [xxx]</p>
+</blockquote>
+<h2 id="启动服务-1"><a href="#启动服务-1" class="headerlink" title="启动服务"></a>启动服务</h2><figure class="highlight jboss-cli"><table><tr><td class="code"><pre><div class="line"><span class="string">./frpc</span> -c <span class="string">./frpc.ini</span></div></pre></td></tr></table></figure>
+<h2 id="后台运行"><a href="#后台运行" class="headerlink" title="后台运行"></a>后台运行</h2><p>服务端虽然启动了，但是不能就这么算了。这个进程最好可以向Windows服务那样拥有一个状态，可以开机自启。我们使用Linux下常用的进程管理器supervisor来管理该服务。</p>
+<p>首先需要安装supervisor。</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><div class="line">sudo apt-<span class="builtin-name">get</span> install supervisor</div></pre></td></tr></table></figure>
+<p>然后在/etc/supervisor/conf.d下新建一个配置文件frp.conf，输入以下内容。command应该是你放置frp软件的位置。</p>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><div class="line">[<span class="string">program:</span>frp]</div><div class="line">command = <span class="regexp">/home/</span>q<span class="regexp">/tools/</span>frp<span class="regexp">/frpc -c /</span>home<span class="regexp">/q/</span>tools<span class="regexp">/frp/</span>frpc.ini</div><div class="line">autostart = <span class="literal">true</span></div></pre></td></tr></table></figure>
+<p>然后启动supervisor，如果事先已经安装好了supervisor那么就重新启动。之后查看一下supervisor的运行状态，看看frp是否已在运行。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> 重启supervisor</span></div><div class="line">sudo systemctl restart supervisor</div><div class="line"><span class="meta">#</span><span class="bash"> 查看supervisor运行状态</span></div><div class="line">sudo supervisorctl status</div></pre></td></tr></table></figure>
+
+        <!--版权声明-->
+        <br />
+<pre class="copyright">
+版权声明:
+转载时请注明作者<b><a href="https://xingbaifang.com" target="_blank" title="兴百放">兴百放</a></b>以及本文地址：
+<b><a href="https://xingbaifang.com/tech/frp.html" target="_blank" title="frp 配置和使用">https://xingbaifang.com/tech/frp.html</a></b>
+</pre>
+
+<style>
+.copyright * {
+  box-sizing: border-box;
+}
+</style>
+      
+    </div>
+
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/tech/">tech</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/frp/">frp</a>
+  </div>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+
+</article>
+
+
+<!-- 使用Gitmemt作为评论系统 -->
+
+  <div id="gitment"></div>
+
+<!-- 主页不要加载gitment -->
+
+
+<script>
+var gitment = new Gitment({
+  owner: 'xbf321',
+  repo: 'blog',
+  oauth: {
+    client_id: 'd135b713eba74d758bbc',
+    client_secret: 'a944f19a6902d57871c5d18871d66aa2a0637019',
+  },
+})
+gitment.render('gitment')
+</script>
+ 
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.baidu.com/baidu";
+    document.search_form.word.value = document.search_form.word.value + " site:xingbaifang.com";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="text" name="word" results="0" placeholder="百度站内搜索" onblur="this.value=''">
+    </form>
+</div>
+
+  <div class="widget tag">
+	<h3 class="title">博客统计</h3>
+	<ul class="entry" style="font-size:13px">
+		<li>
+		    <span class="post-count" style="font-family:Lucida; font-size:16px; color:red">24</span> 篇博客
+		</li>
+		<li>
+			<span id="busuanzi_container_site_pv" style="font-family:Lucida; font-size:16px; color:red"><span id="busuanzi_value_site_pv"></span></span> 位访客
+		</li>
+	</ul>
+</div>
+
+  <!--标签-->
+
+<div class="widget tagcloud">
+	<h3 class="title">标签</h3>
+  		<div class="entry">
+    	<a href="/tags/php/" style="font-size: 10px; color: #0f0">php</a> <a href="/tags/随笔/" style="font-size: 10px; color: #0f0">随笔</a> <a href="/tags/git/" style="font-size: 25px; color: #f00">git</a> <a href="/tags/nginx/" style="font-size: 10px; color: #0f0">nginx</a> <a href="/tags/centos/" style="font-size: 25px; color: #f00">centos</a> <a href="/tags/nodejs/" style="font-size: 10px; color: #0f0">nodejs</a> <a href="/tags/frp/" style="font-size: 10px; color: #0f0">frp</a> <a href="/tags/apache/" style="font-size: 10px; color: #0f0">apache</a> <a href="/tags/raspberry/" style="font-size: 25px; color: #f00">raspberry</a> <a href="/tags/aria/" style="font-size: 10px; color: #0f0">aria</a> <a href="/tags/samba/" style="font-size: 10px; color: #0f0">samba</a> <a href="/tags/mac/" style="font-size: 10px; color: #0f0">mac</a> <a href="/tags/shell/" style="font-size: 10px; color: #0f0">shell</a>
+  		</div>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新博客</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/tech/install-php-and-apache-in-centos.html">在 Centos 中编译安装 php 和 Apache</a>
+      </li>
+    
+      <li>
+        <a href="/tech/frp.html">frp 配置和使用</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-samba.html">树莓派安装 Samba</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-aria2.html">树莓派安装 Aria2</a>
+      </li>
+    
+      <li>
+        <a href="/tech/shell-learning.html">Shell 学习</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-start.html">学习树莓派（Pi 3 Model B）</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nginx-in-centos.html">在 Centos 中安装 nginx</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nodejs-in-centos.html">在 Centos 中编译安装 nodejs</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-04.html">锻炼记录(2017-04)</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-03.html">锻炼记录(2017-03)</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div align="center">
+  Copyright &copy; 2015-2017 theme by <a href="https://kiwenlau.com/" target="_blank">KiwenLau</a>
+</div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<!--返回顶部-->
+<!--返回顶部-->
+<div id="totop" style="position:fixed;bottom:10%;right:10%;cursor:pointer;">
+<a title="返回顶部"><img src="/img/totop.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+</body>
+</html>

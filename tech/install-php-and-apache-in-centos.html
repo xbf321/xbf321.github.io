@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</script>
+  <meta charset="utf-8">
+  
+  <title>在 Centos 中编译安装 php 和 Apache | X栢放</title>
+  <meta name="author" content="兴百放">
+
+  <!-- 设置description -->
+  
+      <meta name="description" content="&lt;p&gt;最近需要部署 piwik 统计系统，无奈使用的是 php 语言，好几年都没有部署过 php 环境了，折腾了两天才搞定。&lt;/p&gt;
+&lt;p&gt;最先想到的方式是用 yum 方式安装，但是不知道为何，总提示 Requires: libcrypto.so.10(OPENSSL_1.0.2)(64bit)，看到这个，第一反应是查看 openssl 的版本，确实比要求的要低，在官网下载一个最新的安装上去，可还是不行，在网上查找了好多方案，依旧不行，就单单因为这个问题，浪费了好长时间。&lt;/p&gt;">
+  
+
+  <meta name="description" content="最近需要部署 piwik 统计系统，无奈使用的是 php 语言，好几年都没有部署过 php 环境了，折腾了两天才搞定。
+最先想到的方式是用 yum 方式安装，但是不知道为何，总提示 Requires: libcrypto.so.10(OPENSSL_1.0.2)(64bit)，看到这个，第一反应是查看 openssl 的版本，确实比要求的要低，在官网下载一个最新的安装上去，可还是不行，在网上查找了好多方案，依旧不行，就单单因为这个问题，浪费了好长时间。" >
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="在 Centos 中编译安装 php 和 Apache"/>
+  <meta property="og:site_name" content="X栢放"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  <link rel="alternate" href="/atom.xml" title="X栢放" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <!--SEO之将标签设为关键词-->
+  
+  
+      <meta name="keywords" content="centos,php,apache">  
+  
+
+<!--网站头像
+<link href="/img/xbf321.ico" rel="icon">-->
+
+
+<!-- 七牛jQuery -->
+<script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
+
+<!-- 七牛jQuery请求失败时，则请求本网站挂载的jQuery -->
+<script>
+window.jQuery || document.write("<script src=/js/jquery.min.js><\/script>")
+</script>
+
+<!-- 加载gitment的css和js文件 -->
+<link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script> 
+<script>
+window.Gitment || document.write("<script src=/js/gitment.js><\/script>")
+</script>
+
+<!-- 使用不蒜子统计博客访问量 -->
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">X栢放</a></h1>
+  <h2><a href="/">喜欢简单美</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">主页</a></li>
+    
+      <li><a href="/archives">博客列表</a></li>
+    
+      <li><a href="/emotion/about-blog.html">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+
+  
+
+  <div class="post-content">
+
+    <!-- 关于页面没有标题 -->
+    
+     <header>
+     <div style="display: flex;">
+      
+        <div class="icon"></div>
+        <time datetime="2017-10-11T16:00:00.000Z"><a href="/tech/install-php-and-apache-in-centos.html">2017-10-12</a></time>  
+      
+      
+      <span id="busuanzi_container_page_pv" style="margin-bottom: 5px; line-height: 1; font-size: 0.9em;" >&#160;&#160;&#160;&#160;&#160;阅读  <span id="busuanzi_value_page_pv"></span></span>
+      
+     </div>
+      
+  
+    <h1 class="title">在 Centos 中编译安装 php 和 Apache</h1>
+  
+
+    </header>
+    
+
+ 
+
+    <div class="entry">
+      
+        <p>最近需要部署 piwik 统计系统，无奈使用的是 php 语言，好几年都没有部署过 php 环境了，折腾了两天才搞定。</p>
+<p>最先想到的方式是用 yum 方式安装，但是不知道为何，总提示 Requires: libcrypto.so.10(OPENSSL_1.0.2)(64bit)，看到这个，第一反应是查看 openssl 的版本，确实比要求的要低，在官网下载一个最新的安装上去，可还是不行，在网上查找了好多方案，依旧不行，就单单因为这个问题，浪费了好长时间。</p>
+<a id="more"></a>
+<p>yum 方式不行，只能退回 编译安装了，自己很少用编译安装，总觉得这个麻烦，但是经历过这次，发现编译安装的方式虽然慢点，但是自由度高，没想到最后安装成功了。</p>
+<p>下面记录的安装过程，最好是先安装 Apache ，在安装 php ，因为 libphp.so 这个文件，需要写入到 Apache 的 modules 里边。</p>
+<h1 id="安装-Apache"><a href="#安装-Apache" class="headerlink" title="安装 Apache"></a>安装 Apache</h1><figure class="highlight jboss-cli"><table><tr><td class="code"><pre><div class="line"><span class="keyword">cd</span> <span class="string">/home/q/</span></div><div class="line">sudo wget http:<span class="string">//mirrors.tuna.tsinghua.edu.cn/apache/httpd/httpd-2.4.28.tar.gz</span></div><div class="line">sudo tar -xf httpd-2.4.28.tar.gz</div><div class="line"><span class="keyword">cd</span> httpd-2.4.28</div><div class="line">sudo <span class="string">./configure</span> <span class="params">--enable-so</span></div></pre></td></tr></table></figure>
+<p>如果提示：configure: error: APR not found. Please read the documentation. 则按以下步骤安装</p>
+<figure class="highlight jboss-cli"><table><tr><td class="code"><pre><div class="line"><span class="keyword">cd</span> ~</div><div class="line"></div><div class="line"><span class="string">//</span> 安装 apr</div><div class="line">sudo wget http:<span class="string">//archive.apache.org/dist/apr/apr-1.4.5.tar.gz</span></div><div class="line">sudo tar -zxf apr-1.4.5.tar.gz</div><div class="line"><span class="keyword">cd</span> apr-1.4.5</div><div class="line">sudo <span class="string">./configure</span> <span class="params">--prefix=/usr/local/apr</span></div><div class="line">sudo make</div><div class="line">sudo make install</div><div class="line"></div><div class="line"><span class="string">//</span> 安装 apr-util</div><div class="line">sudo wget http:<span class="string">//archive.apache.org/dist/apr/apr-util-1.3.12.tar.gz</span></div><div class="line">sudo tar -zxf apr-util-1.3.12.tar.gz </div><div class="line"><span class="keyword">cd</span> apr-util-1.3.12</div><div class="line">sudo <span class="string">./configure</span> <span class="params">--prefix=/usr/local/apr-util</span> -with-apr=<span class="string">/usr/local/apr</span> </div><div class="line">sudo make</div><div class="line">sudo make install</div><div class="line"></div><div class="line"><span class="string">//</span> 安装 pcre</div><div class="line">sudo wget http:<span class="string">//jaist.dl.sourceforge.net/project/pcre/pcre/8.10/pcre-8.10.zip</span></div><div class="line">sudo unzip -o pcre-8.10.zip</div><div class="line"><span class="keyword">cd</span> pcre-8.10</div><div class="line">sudo <span class="string">./configure</span> <span class="params">--prefix=/usr/local/pcre</span></div><div class="line">sudo make</div><div class="line">sudo make install</div></pre></td></tr></table></figure>
+<p>再次安装 Apache</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><div class="line">sudo ./configure --enable-so --<span class="keyword">with</span>-apr=/usr/<span class="keyword">local</span>/apr --<span class="keyword">with</span>-apr-util=/usr/<span class="keyword">local</span>/apr-util/ --<span class="keyword">with</span>-pcre=/usr/<span class="keyword">local</span>/pcre</div><div class="line">sudo make</div><div class="line">sudo make install</div></pre></td></tr></table></figure>
+<h2 id="测试安装是否成功"><a href="#测试安装是否成功" class="headerlink" title="测试安装是否成功"></a>测试安装是否成功</h2><figure class="highlight dts"><table><tr><td class="code"><pre><div class="line">sudo <span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/apache2/</span>bin/apachectl start</div><div class="line">sudo <span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/apache2/</span>bin/apachectl stop</div></pre></td></tr></table></figure>
+<p>访问 <a href="http://机器ip，如果提示" target="_blank" rel="external">http://机器ip，如果提示</a> It works! ，证明启动成功。</p>
+<h1 id="安装-php7"><a href="#安装-php7" class="headerlink" title="安装 php7"></a>安装 php7</h1><h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><figure class="highlight mipsasm"><table><tr><td class="code"><pre><div class="line">sudo yum <span class="keyword">install </span>epel-release libmcrypt-devel libxml2 libxml2-devel openssl openssl-devel <span class="keyword">bzip2 </span><span class="keyword">bzip2-devel </span>libcurl libcurl-devel libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel gmp gmp-devel libmcrypt libmcrypt-devel readline readline-devel libxslt libxslt-devel</div></pre></td></tr></table></figure>
+<h2 id="下载php"><a href="#下载php" class="headerlink" title="下载php"></a>下载php</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><div class="line">cd /home/q/</div><div class="line">sudo wget http:<span class="comment">//hk1.php.net/get/php-7.1.10.tar.gz/from/this/mirror</span></div><div class="line">sudo tar -xvf php-<span class="number">7.1</span>.<span class="number">10</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></div></pre></td></tr></table></figure>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><figure class="highlight jboss-cli"><table><tr><td class="code"><pre><div class="line"><span class="keyword">cd</span> php-7.1.10</div><div class="line">sudo <span class="string">./configure</span> <span class="params">--prefix=/usr/local/php</span> <span class="params">--with-config-file-path=/etc</span> <span class="params">--with-apxs2=/usr/local/apache2/bin/apxs</span> <span class="params">--with-mysql</span> <span class="params">--with-gd</span> <span class="params">--enable-mbstring</span> <span class="params">--with-curl</span> <span class="params">--enable-mbstring</span> <span class="params">--enable-simplexml</span> <span class="params">--with-mysqli=mysqlnd</span> <span class="params">--with-pdo-mysql=mysqlnd</span> <span class="params">--with-zlib</span> <span class="params">--with-zlib-dir</span></div></pre></td></tr></table></figure>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight gauss"><table><tr><td class="code"><pre><div class="line">sudo <span class="built_in">make</span></div><div class="line">sudo <span class="built_in">make</span> install</div></pre></td></tr></table></figure>
+<h1 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h1><figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">sudo vim <span class="regexp">/etc/</span>profile</div><div class="line"></div><div class="line"><span class="regexp">//</span> 结尾加入以下内容</div><div class="line">PATH=<span class="variable">$PATH</span>:<span class="regexp">/usr/</span>local<span class="regexp">/php/</span>bin</div><div class="line">export PATH</div><div class="line"></div><div class="line"><span class="regexp">//</span> 生效</div><div class="line">source <span class="regexp">/etc/</span>profile</div><div class="line"></div><div class="line"><span class="regexp">//</span> 运行</div><div class="line">php -v</div></pre></td></tr></table></figure>
+<h1 id="配置-apache，启用-php"><a href="#配置-apache，启用-php" class="headerlink" title="配置 apache，启用 php"></a>配置 apache，启用 php</h1><p>在 httpd.conf 中添加以下映射（sudo vim /usr/local/apache2/conf/httpd.conf）</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><div class="line"><span class="section">&lt;FilesMatch \.php$&gt;</span></div><div class="line">    <span class="attribute"><span class="nomarkup">SetHandler</span></span> application/x-httpd-php</div><div class="line"><span class="section">&lt;/FilesMatch&gt;</span></div></pre></td></tr></table></figure>
+<p>测试 php 是否能解释，进入到 <em>/usr/local/apache2/htdocs</em> 目录，新建 <em>info.php</em> 文件，添加 &lt;?php phpinfo(); ?&gt;</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><div class="line">cd <span class="regexp">/usr/</span>local<span class="regexp">/apache2/</span>htdocs</div><div class="line">sudo vim info.php</div></pre></td></tr></table></figure>
+<p>重启 Apache</p>
+<figure class="highlight dts"><table><tr><td class="code"><pre><div class="line">sudo <span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/apache2/</span>bin/apachectl stop</div><div class="line">sudo <span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/apache2/</span>bin/apachectl start</div></pre></td></tr></table></figure>
+<p>访问 <a href="http://机器ip/info.php" target="_blank" rel="external">http://机器ip/info.php</a> ，如果能正常显示，说明配置成功。</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://php.net/manual/en/install.unix.apache2.php" target="_blank" rel="external">http://php.net/manual/en/install.unix.apache2.php</a></li>
+<li><a href="http://www.cnlvzi.com/index.php/Index/article/id/101" target="_blank" rel="external">http://www.cnlvzi.com/index.php/Index/article/id/101</a></li>
+</ul>
+
+        <!--版权声明-->
+        <br />
+<pre class="copyright">
+版权声明:
+转载时请注明作者<b><a href="https://xingbaifang.com" target="_blank" title="兴百放">兴百放</a></b>以及本文地址：
+<b><a href="https://xingbaifang.com/tech/install-php-and-apache-in-centos.html" target="_blank" title="在 Centos 中编译安装 php 和 Apache">https://xingbaifang.com/tech/install-php-and-apache-in-centos.html</a></b>
+</pre>
+
+<style>
+.copyright * {
+  box-sizing: border-box;
+}
+</style>
+      
+    </div>
+
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/tech/">tech</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/centos/">centos</a>, <a href="/tags/php/">php</a>, <a href="/tags/apache/">apache</a>
+  </div>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+
+  </div>
+
+</article>
+
+
+<!-- 使用Gitmemt作为评论系统 -->
+
+  <div id="gitment"></div>
+
+<!-- 主页不要加载gitment -->
+
+
+<script>
+var gitment = new Gitment({
+  owner: 'xbf321',
+  repo: 'blog',
+  oauth: {
+    client_id: 'd135b713eba74d758bbc',
+    client_secret: 'a944f19a6902d57871c5d18871d66aa2a0637019',
+  },
+})
+gitment.render('gitment')
+</script>
+ 
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <SCRIPT language=javascript>
+function search(formname) {
+    formname.method = "get";
+    formname.action = "http://www.baidu.com/baidu";
+    document.search_form.word.value = document.search_form.word.value + " site:xingbaifang.com";
+    return true;
+}
+</SCRIPT>
+
+<div class="search">
+    <form name="search_form" target="_blank" onsubmit="search(this)">
+        <input type="text" name="word" results="0" placeholder="百度站内搜索" onblur="this.value=''">
+    </form>
+</div>
+
+  <div class="widget tag">
+	<h3 class="title">博客统计</h3>
+	<ul class="entry" style="font-size:13px">
+		<li>
+		    <span class="post-count" style="font-family:Lucida; font-size:16px; color:red">24</span> 篇博客
+		</li>
+		<li>
+			<span id="busuanzi_container_site_pv" style="font-family:Lucida; font-size:16px; color:red"><span id="busuanzi_value_site_pv"></span></span> 位访客
+		</li>
+	</ul>
+</div>
+
+  <!--标签-->
+
+<div class="widget tagcloud">
+	<h3 class="title">标签</h3>
+  		<div class="entry">
+    	<a href="/tags/php/" style="font-size: 10px; color: #0f0">php</a> <a href="/tags/随笔/" style="font-size: 10px; color: #0f0">随笔</a> <a href="/tags/git/" style="font-size: 25px; color: #f00">git</a> <a href="/tags/nginx/" style="font-size: 10px; color: #0f0">nginx</a> <a href="/tags/centos/" style="font-size: 25px; color: #f00">centos</a> <a href="/tags/nodejs/" style="font-size: 10px; color: #0f0">nodejs</a> <a href="/tags/frp/" style="font-size: 10px; color: #0f0">frp</a> <a href="/tags/apache/" style="font-size: 10px; color: #0f0">apache</a> <a href="/tags/raspberry/" style="font-size: 25px; color: #f00">raspberry</a> <a href="/tags/aria/" style="font-size: 10px; color: #0f0">aria</a> <a href="/tags/samba/" style="font-size: 10px; color: #0f0">samba</a> <a href="/tags/mac/" style="font-size: 10px; color: #0f0">mac</a> <a href="/tags/shell/" style="font-size: 10px; color: #0f0">shell</a>
+  		</div>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新博客</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/tech/install-php-and-apache-in-centos.html">在 Centos 中编译安装 php 和 Apache</a>
+      </li>
+    
+      <li>
+        <a href="/tech/frp.html">frp 配置和使用</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-samba.html">树莓派安装 Samba</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-aria2.html">树莓派安装 Aria2</a>
+      </li>
+    
+      <li>
+        <a href="/tech/shell-learning.html">Shell 学习</a>
+      </li>
+    
+      <li>
+        <a href="/tech/raspbian-start.html">学习树莓派（Pi 3 Model B）</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nginx-in-centos.html">在 Centos 中安装 nginx</a>
+      </li>
+    
+      <li>
+        <a href="/tech/install-nodejs-in-centos.html">在 Centos 中编译安装 nodejs</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-04.html">锻炼记录(2017-04)</a>
+      </li>
+    
+      <li>
+        <a href="/training/physical-training-17-03.html">锻炼记录(2017-03)</a>
+      </li>
+    
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div align="center">
+  Copyright &copy; 2015-2017 theme by <a href="https://kiwenlau.com/" target="_blank">KiwenLau</a>
+</div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<!--返回顶部-->
+<!--返回顶部-->
+<div id="totop" style="position:fixed;bottom:10%;right:10%;cursor:pointer;">
+<a title="返回顶部"><img src="/img/totop.png"/></a>
+</div>
+<script src="/js/totop.js"></script>
+</body>
+</html>
