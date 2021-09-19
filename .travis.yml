@@ -2,9 +2,9 @@ language: ruby
 rvm:
   - 2.6.3
 script:
-  - rm -rf *.*
-  - git checkout -b gh-pages origin/gh-pages
-  - git pull
+  #- rm -rf *.*
+  #- git checkout -b gh-pages origin/gh-pages
+  #- git pull
   - bundle install
   - bundle exec jekyll build
 after_success:
