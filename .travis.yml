@@ -12,10 +12,12 @@ after_success:
   - git config user.email "xbf321@gmail.com"
   - git add --all .
   - git commit -m "Travis CI Auto Builder"
-  - git push --force https://$DEPLOY_TOKEN@github.com/xbf321/xbf321.github.io.git master
+  - git remote add origin https://$DEPLOY_TOKEN@github.com/xbf321/xbf321.github.io.git
+  - git remote show origin
+  - git push --force origin gh-pages:gh-pages
 branches:
   only:
-  - source
+  - master
 addons:
   apt:
     packages:

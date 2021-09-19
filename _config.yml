@@ -1,0 +1,10 @@
+title: 柏放的小屋
+email: xbf321@gmail.com
+description: >- # this means to ignore newlines until "baseurl:"
+  记录工作、生活、学习。
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+github_username:  xbf321
+
+# Build settings
+theme: minima
