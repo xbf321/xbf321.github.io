@@ -8,6 +8,7 @@ script:
   - bundle install
   - bundle exec jekyll build
 after_success:
+  - git checkout -b master
   - rm -rf `ls  | grep -v _site`  && cp -r ./_site/* . && rm -rf _site
   - git config user.name "xbf321"
   - git config user.email "xbf321@gmail.com"
