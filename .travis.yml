@@ -2,18 +2,15 @@ language: ruby
 rvm:
   - 2.6.3
 script:
-  #- rm -rf *.*
-  #- git checkout -b gh-pages origin/gh-pages
-  #- git pull
   - bundle install
   - bundle exec jekyll build
 after_success:
   - git checkout -b master
   - rm -rf `ls  | grep -v _site`  && cp -r ./_site/* . && rm -rf _site
-  - git config user.name "xbf321"
-  - git config user.email "xbf321@gmail.com"
   - git add --all .
   - git commit -m "Travis CI Auto Builder"
+  - git config user.name "xbf321"
+  - git config user.email "xbf321@gmail.com"
   - git push --force https://$DEPLOY_TOKEN@github.com/xbf321/xbf321.github.io.git master
 branches:
   only:
