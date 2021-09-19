@@ -7,6 +7,7 @@ script:
 after_success:
   - git clone https://github.com/xbf321/xbf321.github.io.git
   - cd xbf321.github.io
+  - git checkout -b gh-pages origin/gh-pages
   - rm -rf `ls  | grep -v _site`  && cp -r ./_site/* . && rm -rf _site
   - git config user.name "xbf321"
   - git config user.email "xbf321@gmail.com"
