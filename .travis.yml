@@ -2,6 +2,7 @@ language: ruby
 rvm:
   - 2.6.3
 script:
+  - git checkout -b gh-pages
   - bundle install
   - bundle exec jekyll build
 after_success:
@@ -10,7 +11,7 @@ after_success:
   - git config user.email "xbf321@gmail.com"
   - git add --all .
   - git commit -m "Travis CI Auto Builder"
-  - git push https://$DEPLOY_TOKEN@github.com/xbf321/xbf321.github.io.git master --force
+  - git push --force https://$DEPLOY_TOKEN@github.com/xbf321/xbf321.github.io.git gh-pages
 branches:
   only:
   - master
