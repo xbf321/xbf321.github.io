@@ -14,7 +14,7 @@ after_success:
   - git push --force https://$DEPLOY_TOKEN@github.com/xbf321/xbf321.github.io.git master
 branches:
   only:
-  - master
+  - source
 addons:
   apt:
     packages:
