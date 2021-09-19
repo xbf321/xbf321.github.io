@@ -5,13 +5,14 @@ script:
   - bundle install
   - bundle exec jekyll build
 after_success:
-  #- git checkout -b gh-pages origin/gh-pages
   - rm -rf `ls  | grep -v _site`  && cp -r ./_site/* . && rm -rf _site
   - git config user.name "xbf321"
   - git config user.email "xbf321@gmail.com"
   - git add --all .
   - git commit -m "Travis CI Auto Builder"
-  - git push --force https://$DEPLOY_TOKEN@github.com/xbf321/xbf321.github.io.git gh-pages
+  - git remote add origin https://$DEPLOY_TOKEN@github.com/xbf321/xbf321.github.io.git
+  - git remote show origin
+  - git push origin master --force
 branches:
   only:
   - master
