@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-10-17T04:26:46+00:00</updated><id>/feed.xml</id><title type="html">柏放的小屋</title><subtitle>记录工作、生活、学习。</subtitle><entry><title type="html">树莓派安装 frpc 客户端</title><link href="/2020/10/17/install-frpc-in-pi.html" rel="alternate" type="text/html" title="树莓派安装 frpc 客户端" /><published>2020-10-17T00:00:00+00:00</published><updated>2020-10-17T00:00:00+00:00</updated><id>/2020/10/17/install-frpc-in-pi</id><content type="html" xml:base="/2020/10/17/install-frpc-in-pi.html">&lt;h2 id=&quot;目的&quot;&gt;目的&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;实现内网穿透，外网可以访问家里设备。比如访问路由器、树莓派。&lt;/li&gt;
+  &lt;li&gt;访问家里打印机，便于在外网打印文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;下载-frp&quot;&gt;下载 frp&lt;/h2&gt;
+
+&lt;p&gt;前往&lt;a href=&quot;https://github.com/fatedier/frp/releases&quot;&gt;releases&lt;/a&gt;页面下载相应架构的应用包，这里是在树莓派中使用，所以需要下载 ARM 包。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 进入 /home/pi/Downloads&lt;/span&gt;
+wget https://github.com/fatedier/frp/releases/download/v0.37.1/frp_0.37.1_linux_arm.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;解压&quot;&gt;解压&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;tar&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-zxvf&lt;/span&gt; frp_0.37.1_linux_arm.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;配置-frpc&quot;&gt;配置 frpc&lt;/h2&gt;
+
+&lt;p&gt;下载包中，包含服务端和客户端，这里我们只需要配置客户端，也就是 &lt;strong&gt;frpc.ini&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;common]
+server_addr &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; domain
+server_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; port
+token &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; da013ce4-2a80-4858-aacd-3af80d6cae46
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ssh-pi]
+&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; tcp
+local_ip &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0.0.0.0
+local_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 22
+remote_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 19042
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;printer]
+&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; tcp
+local_ip &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 192.168.31.10
+local_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 9100
+remote_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 19100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;创建服务&quot;&gt;创建服务&lt;/h2&gt;
+
+&lt;p&gt;进入 &lt;strong&gt;/lib/systemd/system&lt;/strong&gt; 目录，新建 &lt;strong&gt;frpc.service&lt;/strong&gt;，内容如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Unit]
+&lt;span class=&quot;nv&quot;&gt;Description&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Frp Client Service
+&lt;span class=&quot;nv&quot;&gt;After&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;network.target
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Service]
+&lt;span class=&quot;nv&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;simple
+&lt;span class=&quot;nv&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;nobody
+&lt;span class=&quot;nv&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;on-failure
+&lt;span class=&quot;nv&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5s
+&lt;span class=&quot;nv&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/pi/Downloads/frp/frpc &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; /home/pi/Downloads/frp/frpc.ini
+&lt;span class=&quot;nv&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/pi/Downloads/frp/frpc reload &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; /home/pi/Downloads/frp/frpc.ini
+&lt;span class=&quot;nv&quot;&gt;LimitNOFILE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1048576
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Install]
+&lt;span class=&quot;nv&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;multi-user.target
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;设置开机启动&quot;&gt;设置开机启动&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 启动服务&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemctl start frpc.service
+&lt;span class=&quot;c&quot;&gt;# 停止服务&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemctl stop frpc.service
+&lt;span class=&quot;c&quot;&gt;# 重启&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemctl restart frpc.service
+&lt;span class=&quot;c&quot;&gt;# 查看服务状态&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemctl status frpc.service
+&lt;span class=&quot;c&quot;&gt;# 开启启动&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemctl &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;frpc.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">目的 实现内网穿透，外网可以访问家里设备。比如访问路由器、树莓派。 访问家里打印机，便于在外网打印文件。 下载 frp 前往releases页面下载相应架构的应用包，这里是在树莓派中使用，所以需要下载 ARM 包。 # 进入 /home/pi/Downloads wget https://github.com/fatedier/frp/releases/download/v0.37.1/frp_0.37.1_linux_arm.tar.gz 解压 tar -zxvf frp_0.37.1_linux_arm.tar.gz 配置 frpc 下载包中，包含服务端和客户端，这里我们只需要配置客户端，也就是 frpc.ini [common] server_addr = domain server_port = port token = da013ce4-2a80-4858-aacd-3af80d6cae46 [ssh-pi] type = tcp local_ip = 0.0.0.0 local_port = 22 remote_port = 19042 [printer] type = tcp local_ip = 192.168.31.10 local_port = 9100 remote_port = 19100 创建服务 进入 /lib/systemd/system 目录，新建 frpc.service，内容如下： [Unit] Description=Frp Client Service After=network.target [Service] Type=simple User=nobody Restart=on-failure RestartSec=5s ExecStart=/home/pi/Downloads/frp/frpc -c /home/pi/Downloads/frp/frpc.ini ExecReload=/home/pi/Downloads/frp/frpc reload -c /home/pi/Downloads/frp/frpc.ini LimitNOFILE=1048576 [Install] WantedBy=multi-user.target 设置开机启动 # 启动服务 sudo systemctl start frpc.service # 停止服务 sudo systemctl stop frpc.service # 重启 sudo systemctl restart frpc.service # 查看服务状态 sudo systemctl status frpc.service # 开启启动 sudo systemctl enable frpc.service</summary></entry><entry><title type="html">树莓派安装 Aria2</title><link href="/2017/07/21/install-aria2-in-pi.html" rel="alternate" type="text/html" title="树莓派安装 Aria2" /><published>2017-07-21T00:00:00+00:00</published><updated>2017-07-21T00:00:00+00:00</updated><id>/2017/07/21/install-aria2-in-pi</id><content type="html" xml:base="/2017/07/21/install-aria2-in-pi.html">&lt;p&gt;目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;1-安装并配置-aria2&quot;&gt;1. 安装并配置 aria2&lt;/h2&gt;
+
+&lt;h3 id=&quot;安装&quot;&gt;安装&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;aria2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;创建配置文件夹&quot;&gt;创建配置文件夹&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo mkdir&lt;/span&gt; /etc/aria2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;创建-session-和配置文件&quot;&gt;创建 session 和配置文件&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo touch&lt;/span&gt; /etc/aria2/aria2.session
+&lt;span class=&quot;nb&quot;&gt;sudo touch&lt;/span&gt; /etc/aria2/aria2.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;编辑 &lt;em&gt;/etc/aria2/aria2.conf&lt;/em&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;## 文件保存相关 ##&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 文件保存目录&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;dir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/q/download
+&lt;span class=&quot;c&quot;&gt;# 启用磁盘缓存, 0为禁用缓存, 需1.16以上版本, 默认:16M&lt;/span&gt;
+disk-cache&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;32M
+&lt;span class=&quot;c&quot;&gt;# 断点续传&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 文件预分配方式, 能有效降低磁盘碎片, 默认:prealloc&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 预分配所需时间: none &amp;lt; falloc ? trunc &amp;lt; prealloc&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# falloc和trunc则需要文件系统和内核支持&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# NTFS建议使用falloc, EXT3/4建议trunc, MAC 下需要注释此项&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#file-allocation=falloc&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;## 下载连接相关 ##&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 最大同时下载任务数, 运行时可修改, 默认:5&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#max-concurrent-downloads=5&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 同一服务器连接数, 添加时可指定, 默认:1&lt;/span&gt;
+max-connection-per-server&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;15
+&lt;span class=&quot;c&quot;&gt;# 整体下载速度限制, 运行时可修改, 默认:0（不限制）&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#max-overall-download-limit=0&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 单个任务下载速度限制, 默认:0（不限制）&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#max-download-limit=0&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 整体上传速度限制, 运行时可修改, 默认:0（不限制）&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#max-overall-upload-limit=0&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 单个任务上传速度限制, 默认:0（不限制）&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#max-upload-limit=0&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 禁用IPv6, 默认:false&lt;/span&gt;
+disable-ipv6&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 最小文件分片大小, 添加时可指定, 取值范围1M -1024M, 默认:20M&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 假定size=10M, 文件为20MiB 则使用两个来源下载; 文件为15MiB 则使用一个来源下载&lt;/span&gt;
+min-split-size&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10M
+&lt;span class=&quot;c&quot;&gt;# 单个任务最大线程数, 添加时可指定, 默认:5&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10
+
+&lt;span class=&quot;c&quot;&gt;## 进度保存相关 ##&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 从会话文件中读取下载任务&lt;/span&gt;
+input-file&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/etc/aria2/aria2.session
+&lt;span class=&quot;c&quot;&gt;# 在Aria2退出时保存错误的、未完成的下载任务到会话文件&lt;/span&gt;
+save-session&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/etc/aria2/aria2.session
+&lt;span class=&quot;c&quot;&gt;# 定时保存会话, 0为退出时才保存, 需1.16.1以上版本, 默认:0&lt;/span&gt;
+save-session-interval&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;60
+
+&lt;span class=&quot;c&quot;&gt;## RPC相关设置 ##&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 启用RPC, 默认:false&lt;/span&gt;
+enable-rpc&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 允许所有来源, 默认:false&lt;/span&gt;
+rpc-allow-origin-all&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 允许外部访问, 默认:false&lt;/span&gt;
+rpc-listen-all&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# RPC端口, 仅当默认端口被占用时修改&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# rpc-listen-port=6800&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 设置的RPC授权令牌, v1.18.4新增功能, 取代 --rpc-user 和 --rpc-passwd 选项&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#rpc-secret=&amp;lt;TOKEN&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;## BT/PT下载相关 ##&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 当下载的是一个种子(以.torrent结尾)时, 自动开始BT任务, 默认:true&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#follow-torrent=true&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 客户端伪装, PT需要&lt;/span&gt;
+peer-id-prefix&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-TR2770-&lt;/span&gt;
+user-agent&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Transmission/2.77
+&lt;span class=&quot;c&quot;&gt;# 强制保存会话, 即使任务已经完成, 默认:false&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 较新的版本开启后会在任务完成后依然保留.aria2文件&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#force-save=false&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 继续之前的BT任务时, 无需再次校验, 默认:false&lt;/span&gt;
+bt-seed-unverified&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 保存磁力链接元数据为种子文件(.torrent文件), 默认:false&lt;/span&gt;
+bt-save-metadata&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;启动&quot;&gt;启动&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;aria2c &lt;span class=&quot;nt&quot;&gt;--enable-rpc&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--rpc-listen-all&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--rpc-allow-origin-all&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;2-界面操作&quot;&gt;2. 界面操作&lt;/h2&gt;
+
+&lt;h3 id=&quot;yaaw&quot;&gt;YAAW&lt;/h3&gt;
+
+&lt;p&gt;这里使用 &lt;a href=&quot;https://github.com/binux/yaaw&quot;&gt;YAAW&lt;/a&gt; 界面管理远程下载，因为它支持 Chrome 插件，这样，只有服务器开通一个 rpc 的服务，就可以在任意地方下载文件了，不需要在重新部署一个 server 站点。&lt;/p&gt;
+
+&lt;h3 id=&quot;webui-aria2&quot;&gt;webui-aria2&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;解压到  &lt;em&gt;/home/q/www/webui-aria2&lt;/em&gt; 目录&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone https://github.com/ziahamza/webui-aria2.git &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; /home/q/www/webui-aria2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;配置 &lt;em&gt;configuration.js&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;因为我专门提供了一个对外的 &lt;strong&gt;RPC&lt;/strong&gt; 服务，所以在这要修改成自己的 &lt;strong&gt;RPC&lt;/strong&gt; 服务。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;本地运行&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;node node-server.js
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;后台运行，同样使用 &lt;strong&gt;supervisor&lt;/strong&gt; 管理&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在 &lt;em&gt;/etc/supervisor/conf.d/&lt;/em&gt; 目录下新建 webui-aria2.conf 文件，填入一下内容：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;program:webui-aria2]
+directory &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /home/q/www/webui-aria2
+&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; node node-server.js
+autostart &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;重启 &lt;strong&gt;supervisor&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemctl restart supervisor
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。</summary></entry><entry><title type="html">树莓派安装 Samba</title><link href="/2017/07/21/install-samba-in-pi.html" rel="alternate" type="text/html" title="树莓派安装 Samba" /><published>2017-07-21T00:00:00+00:00</published><updated>2017-07-21T00:00:00+00:00</updated><id>/2017/07/21/install-samba-in-pi</id><content type="html" xml:base="/2017/07/21/install-samba-in-pi.html">&lt;p&gt;介绍如何在树莓派中安装 Samba 服务。
+&lt;!--more--&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;安装-samba&quot;&gt;安装 samba&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;samba samba-common-bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;配置-samba&quot;&gt;配置 samba&lt;/h2&gt;
+
+&lt;p&gt;先备份 smb.conf&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo cp &lt;/span&gt;smb.conf smb.conf.bak
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后编辑 smb.conf，在文件的最后，添加以下内容&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nas]
+   comment &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; NAS Storage
+   path &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /home/q/nas
+   browseable &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;yes
+   &lt;/span&gt;writable &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;yes
+   &lt;/span&gt;create mask &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0664
+   directory mask &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0775
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;设置文件夹权限&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo chmod &lt;/span&gt;777 /home/q/nas
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;添加访问用户和密码&quot;&gt;添加访问用户和密码&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;useradd raspsmb
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;smbpasswd &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; raspsmb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;启动服务&quot;&gt;启动服务&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; /etc/init.d/samba restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">介绍如何在树莓派中安装 Samba 服务。</summary></entry><entry><title type="html">frp 配置和使用</title><link href="/2017/07/17/how-to-use-frp.html" rel="alternate" type="text/html" title="frp 配置和使用" /><published>2017-07-17T00:00:00+00:00</published><updated>2017-07-17T00:00:00+00:00</updated><id>/2017/07/17/how-to-use-frp</id><content type="html" xml:base="/2017/07/17/how-to-use-frp.html">&lt;h2 id=&quot;frp-作用&quot;&gt;frp 作用&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;利用处于内网或防火墙后的机器，对外网环境提供 http 或 https 服务。&lt;/li&gt;
+  &lt;li&gt;对于 http, https 服务支持基于域名的虚拟主机，支持自定义域名绑定，使多个域名可以共用一个80端口。&lt;/li&gt;
+  &lt;li&gt;利用处于内网或防火墙后的机器，对外网环境提供 tcp 和 udp 服务，例如在家里通过 ssh 访问处于公司内网环境内的主机。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;详细参见&lt;a href=&quot;https://github.com/fatedier/frp/blob/master/README_zh.md&quot;&gt;官网&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;服务端配置公网&quot;&gt;服务端配置（公网）&lt;/h2&gt;
+
+&lt;h3 id=&quot;下载&quot;&gt;下载&lt;/h3&gt;
+
+&lt;p&gt;使用 &lt;strong&gt;wget&lt;/strong&gt; 指令下载到我们制定的目录中，如：&lt;em&gt;/home/tools/frp&lt;/em&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;wget https://github.com/fatedier/frp/releases/download/v0.13.0/frp_0.13.0_linux_amd64.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;解压&quot;&gt;解压&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo tar&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-zxvf&lt;/span&gt; frp_0.13.0_linux_amd64.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;因为作为服务端，可以把客户端文件删掉，使用 &lt;em&gt;rm&lt;/em&gt; 指令。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; frpc
+&lt;span class=&quot;nb&quot;&gt;sudo rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; frpc.ini
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;编辑-frpsini-配置文件&quot;&gt;编辑 &lt;em&gt;frps.ini&lt;/em&gt; 配置文件&lt;/h3&gt;
+
+&lt;p&gt;可以参考官网范例。
+我这删掉了一些不用的内容，是个简化版的配置文件。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;common]
+bind_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 7000
+vhost_http_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 80
+dashboard_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 7500
+dashboard_user &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; xxx
+dashboard_pwd &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; xxx
+log_file &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /home/tools/frp/frps.log
+subdomain_host &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; xxx.me
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ssh]
+listen_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 422
+auth_token &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; xxx
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nas]
+&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; http
+auth_token &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; xxx
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nas-rpc]
+&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; http
+auth_token &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; xxx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;启动服务&quot;&gt;启动服务&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./frps &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; ./frps.ini
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;systemd-管理&quot;&gt;Systemd 管理&lt;/h3&gt;
+
+&lt;p&gt;因为我的公网机器是 Centos ，所以用的是 Systemd 管理。&lt;/p&gt;
+
+&lt;p&gt;编写 &lt;em&gt;frp service&lt;/em&gt; 文件&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;vim /usr/lib/systemd/system/frps.service
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;内容如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Unit]
+&lt;span class=&quot;nv&quot;&gt;Description&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;frps
+&lt;span class=&quot;nv&quot;&gt;After&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;network.target
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Service]
+&lt;span class=&quot;nv&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;30
+&lt;span class=&quot;nv&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/home/tools/frp/frps &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; /home/tools/frp/frps.ini
+&lt;span class=&quot;nv&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/bin/kill &lt;span class=&quot;nv&quot;&gt;$MAINPID&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Install]
+&lt;span class=&quot;nv&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;multi-user.target
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;开机启动和查看状态&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;systemctl &lt;span class=&quot;nb&quot;&gt;enable &lt;/span&gt;frps
+systemctl start frps
+systemctl status frps
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;客户端配置内网&quot;&gt;客户端配置（内网）&lt;/h2&gt;
+
+&lt;p&gt;因为 frp 下载自带客户端和服务端，所以这里，可以参考上面的。&lt;/p&gt;
+
+&lt;p&gt;下载之后，同样删掉 &lt;strong&gt;服务端&lt;/strong&gt; 文件。&lt;/p&gt;
+
+&lt;h3 id=&quot;编辑-fprcini-配置文件&quot;&gt;编辑 &lt;em&gt;fprc.ini&lt;/em&gt; 配置文件&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;common]
+server_addr &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1.1.1.1
+server_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 7000
+log_file &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /home/q/tools/frp/frpc.log
+auth_token &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; xxx
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ssh]
+&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; tcp
+local_ip &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 127.0.0.1
+local_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 22
+remote_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 422
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nas]
+&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; http
+local_ip &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 127.0.0.1
+local_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 8888
+subdomain &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; nas
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nas-rpc]
+&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; http
+local_ip &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 127.0.0.1
+local_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 6800
+subdomain &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; rpc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;客户端和服务器端要一一对应，比如 [xxx]&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;启动服务-1&quot;&gt;启动服务&lt;/h3&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./frpc &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; ./frpc.ini
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;后台运行&quot;&gt;后台运行&lt;/h3&gt;
+
+&lt;p&gt;服务端虽然启动了，但是不能就这么算了。这个进程最好可以向Windows服务那样拥有一个状态，可以开机自启。我们使用Linux下常用的进程管理器supervisor来管理该服务。&lt;/p&gt;
+
+&lt;p&gt;首先需要安装supervisor。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;supervisor
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后在/etc/supervisor/conf.d下新建一个配置文件frp.conf，输入以下内容。command应该是你放置frp软件的位置。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;program:frp]
+&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /home/q/tools/frp/frpc &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; /home/q/tools/frp/frpc.ini
+autostart &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后启动supervisor，如果事先已经安装好了supervisor那么就重新启动。之后查看一下supervisor的运行状态，看看frp是否已在运行。&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 重启supervisor&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemctl restart supervisor
+&lt;span class=&quot;c&quot;&gt;# 查看supervisor运行状态&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;supervisorctl status
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">frp 作用 利用处于内网或防火墙后的机器，对外网环境提供 http 或 https 服务。 对于 http, https 服务支持基于域名的虚拟主机，支持自定义域名绑定，使多个域名可以共用一个80端口。 利用处于内网或防火墙后的机器，对外网环境提供 tcp 和 udp 服务，例如在家里通过 ssh 访问处于公司内网环境内的主机。</summary></entry><entry><title type="html">在Mac中安装nginx</title><link href="/2015/08/12/install-nginx-in-mac.html" rel="alternate" type="text/html" title="在Mac中安装nginx" /><published>2015-08-12T00:00:00+00:00</published><updated>2015-08-12T00:00:00+00:00</updated><id>/2015/08/12/install-nginx-in-mac</id><content type="html" xml:base="/2015/08/12/install-nginx-in-mac.html">&lt;p&gt;homebrew是mac下非常好用的包管理器，会自动安装相关的依赖包，将你从繁琐的软件依赖安装中解放出来。&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id=&quot;安装homebrew&quot;&gt;安装Homebrew&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;homebrew是mac下非常好用的包管理器，会自动安装相关的依赖包，将你从繁琐的软件依赖安装中解放出来。
+安装homebrew也非常简单，只要在终端中输入:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ruby &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;curl &lt;span class=&quot;nt&quot;&gt;-fsSL&lt;/span&gt; https://raw.githubusercontent.com/Homebrew/install/master/install&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;安装-nginx&quot;&gt;安装 Nginx&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;安装时，会首先安装依赖&lt;strong&gt;pcre&lt;/strong&gt;和&lt;strong&gt;openssl&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;nginx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;启动-nginx&quot;&gt;启动 Nginx&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;nginx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;测试&quot;&gt;测试&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;http://localhost:8080
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;配置nginxconf&quot;&gt;配置nginx.conf&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;nginx &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; stop
+vim /usr/local/etc/nginx/nginx.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;保存并启动&quot;&gt;保存并启动&lt;/h2&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;nginx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">homebrew是mac下非常好用的包管理器，会自动安装相关的依赖包，将你从繁琐的软件依赖安装中解放出来。</summary></entry></feed>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>树莓派安装 Aria2 | 柏放的小屋</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="树莓派安装 Aria2" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。" />
+<meta property="og:description" content="目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。" />
+<link rel="canonical" href="/2017/07/21/install-aria2-in-pi.html" />
+<meta property="og:url" content="/2017/07/21/install-aria2-in-pi.html" />
+<meta property="og:site_name" content="柏放的小屋" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-07-21T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="树莓派安装 Aria2" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"/2017/07/21/install-aria2-in-pi.html"},"description":"目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。","headline":"树莓派安装 Aria2","dateModified":"2017-07-21T00:00:00+00:00","datePublished":"2017-07-21T00:00:00+00:00","url":"/2017/07/21/install-aria2-in-pi.html","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="柏放的小屋" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">柏放的小屋</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">树莓派安装 Aria2</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2017-07-21T00:00:00+00:00" itemprop="datePublished">Jul 21, 2017
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>目前迅雷已经关闭第三方的远程下载功能，在这使用 Aria2 代替。</p>
+
+<!--more-->
+
+<h2 id="1-安装并配置-aria2">1. 安装并配置 aria2</h2>
+
+<h3 id="安装">安装</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>aria2
+</code></pre></div></div>
+
+<h3 id="创建配置文件夹">创建配置文件夹</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo mkdir</span> /etc/aria2
+</code></pre></div></div>
+
+<h3 id="创建-session-和配置文件">创建 session 和配置文件</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo touch</span> /etc/aria2/aria2.session
+<span class="nb">sudo touch</span> /etc/aria2/aria2.conf
+</code></pre></div></div>
+
+<p>编辑 <em>/etc/aria2/aria2.conf</em></p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">## 文件保存相关 ##</span>
+
+<span class="c"># 文件保存目录</span>
+<span class="nb">dir</span><span class="o">=</span>/home/q/download
+<span class="c"># 启用磁盘缓存, 0为禁用缓存, 需1.16以上版本, 默认:16M</span>
+disk-cache<span class="o">=</span>32M
+<span class="c"># 断点续传</span>
+<span class="k">continue</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="c"># 文件预分配方式, 能有效降低磁盘碎片, 默认:prealloc</span>
+<span class="c"># 预分配所需时间: none &lt; falloc ? trunc &lt; prealloc</span>
+<span class="c"># falloc和trunc则需要文件系统和内核支持</span>
+<span class="c"># NTFS建议使用falloc, EXT3/4建议trunc, MAC 下需要注释此项</span>
+<span class="c">#file-allocation=falloc</span>
+
+<span class="c">## 下载连接相关 ##</span>
+
+<span class="c"># 最大同时下载任务数, 运行时可修改, 默认:5</span>
+<span class="c">#max-concurrent-downloads=5</span>
+<span class="c"># 同一服务器连接数, 添加时可指定, 默认:1</span>
+max-connection-per-server<span class="o">=</span>15
+<span class="c"># 整体下载速度限制, 运行时可修改, 默认:0（不限制）</span>
+<span class="c">#max-overall-download-limit=0</span>
+<span class="c"># 单个任务下载速度限制, 默认:0（不限制）</span>
+<span class="c">#max-download-limit=0</span>
+<span class="c"># 整体上传速度限制, 运行时可修改, 默认:0（不限制）</span>
+<span class="c">#max-overall-upload-limit=0</span>
+<span class="c"># 单个任务上传速度限制, 默认:0（不限制）</span>
+<span class="c">#max-upload-limit=0</span>
+<span class="c"># 禁用IPv6, 默认:false</span>
+disable-ipv6<span class="o">=</span><span class="nb">true</span>
+
+<span class="c"># 最小文件分片大小, 添加时可指定, 取值范围1M -1024M, 默认:20M</span>
+<span class="c"># 假定size=10M, 文件为20MiB 则使用两个来源下载; 文件为15MiB 则使用一个来源下载</span>
+min-split-size<span class="o">=</span>10M
+<span class="c"># 单个任务最大线程数, 添加时可指定, 默认:5</span>
+<span class="nb">split</span><span class="o">=</span>10
+
+<span class="c">## 进度保存相关 ##</span>
+
+<span class="c"># 从会话文件中读取下载任务</span>
+input-file<span class="o">=</span>/etc/aria2/aria2.session
+<span class="c"># 在Aria2退出时保存错误的、未完成的下载任务到会话文件</span>
+save-session<span class="o">=</span>/etc/aria2/aria2.session
+<span class="c"># 定时保存会话, 0为退出时才保存, 需1.16.1以上版本, 默认:0</span>
+save-session-interval<span class="o">=</span>60
+
+<span class="c">## RPC相关设置 ##</span>
+
+<span class="c"># 启用RPC, 默认:false</span>
+enable-rpc<span class="o">=</span><span class="nb">true</span>
+<span class="c"># 允许所有来源, 默认:false</span>
+rpc-allow-origin-all<span class="o">=</span><span class="nb">true</span>
+<span class="c"># 允许外部访问, 默认:false</span>
+rpc-listen-all<span class="o">=</span><span class="nb">true</span>
+<span class="c"># RPC端口, 仅当默认端口被占用时修改</span>
+<span class="c"># rpc-listen-port=6800</span>
+<span class="c"># 设置的RPC授权令牌, v1.18.4新增功能, 取代 --rpc-user 和 --rpc-passwd 选项</span>
+<span class="c">#rpc-secret=&lt;TOKEN&gt;</span>
+
+<span class="c">## BT/PT下载相关 ##</span>
+
+<span class="c"># 当下载的是一个种子(以.torrent结尾)时, 自动开始BT任务, 默认:true</span>
+<span class="c">#follow-torrent=true</span>
+<span class="c"># 客户端伪装, PT需要</span>
+peer-id-prefix<span class="o">=</span><span class="nt">-TR2770-</span>
+user-agent<span class="o">=</span>Transmission/2.77
+<span class="c"># 强制保存会话, 即使任务已经完成, 默认:false</span>
+<span class="c"># 较新的版本开启后会在任务完成后依然保留.aria2文件</span>
+<span class="c">#force-save=false</span>
+<span class="c"># 继续之前的BT任务时, 无需再次校验, 默认:false</span>
+bt-seed-unverified<span class="o">=</span><span class="nb">true</span>
+<span class="c"># 保存磁力链接元数据为种子文件(.torrent文件), 默认:false</span>
+bt-save-metadata<span class="o">=</span><span class="nb">true</span>
+</code></pre></div></div>
+
+<h2 id="启动">启动</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>aria2c <span class="nt">--enable-rpc</span> <span class="nt">--rpc-listen-all</span><span class="o">=</span><span class="nb">true</span> <span class="nt">--rpc-allow-origin-all</span>
+</code></pre></div></div>
+
+<h2 id="2-界面操作">2. 界面操作</h2>
+
+<h3 id="yaaw">YAAW</h3>
+
+<p>这里使用 <a href="https://github.com/binux/yaaw">YAAW</a> 界面管理远程下载，因为它支持 Chrome 插件，这样，只有服务器开通一个 rpc 的服务，就可以在任意地方下载文件了，不需要在重新部署一个 server 站点。</p>
+
+<h3 id="webui-aria2">webui-aria2</h3>
+
+<ul>
+  <li>解压到  <em>/home/q/www/webui-aria2</em> 目录</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/ziahamza/webui-aria2.git <span class="nt">-d</span> /home/q/www/webui-aria2
+</code></pre></div></div>
+
+<ul>
+  <li>配置 <em>configuration.js</em></li>
+</ul>
+
+<p>因为我专门提供了一个对外的 <strong>RPC</strong> 服务，所以在这要修改成自己的 <strong>RPC</strong> 服务。</p>
+
+<ul>
+  <li>本地运行</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>node node-server.js
+</code></pre></div></div>
+
+<ul>
+  <li>后台运行，同样使用 <strong>supervisor</strong> 管理</li>
+</ul>
+
+<p>在 <em>/etc/supervisor/conf.d/</em> 目录下新建 webui-aria2.conf 文件，填入一下内容：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>program:webui-aria2]
+directory <span class="o">=</span> /home/q/www/webui-aria2
+<span class="nb">command</span> <span class="o">=</span> node node-server.js
+autostart <span class="o">=</span> <span class="nb">true</span>
+</code></pre></div></div>
+
+<p>重启 <strong>supervisor</strong></p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl restart supervisor
+</code></pre></div></div>
+
+  </div><a class="u-url" href="/2017/07/21/install-aria2-in-pi.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">柏放的小屋</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">柏放的小屋</li><li><a class="u-email" href="mailto:xbf321@gmail.com">xbf321@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/xbf321"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">xbf321</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>记录工作、生活、学习。</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
