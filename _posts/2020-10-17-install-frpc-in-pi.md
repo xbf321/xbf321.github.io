@@ -39,13 +39,13 @@ token = da013ce4-2a80-4858-aacd-3af80d6cae46
 type = tcp
 local_ip = 0.0.0.0
 local_port = 22
-remote_port = 9042
+remote_port = 19042
 
 [printer]
 type = tcp
 local_ip = 192.168.31.10
 local_port = 9100
-remote_port = 9100
+remote_port = 19100
 ```
 
 ## 创建服务
