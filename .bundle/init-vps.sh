@@ -24,8 +24,8 @@ resetTimezone() {
 updateSystem() {
   console $GREEN "更新系统"
   yum update
-  console $GREEN "安装 make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel libxslt-devel git tar vim unzip"
-  $CMD_INSTALL make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel libxslt-devel git tar vim unzip
+  console $GREEN "安装 make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel libxslt-devel git tar vim unzip nginx-mod-stream"
+  $CMD_INSTALL make zlib zlib-devel gcc-c++ libtool  openssl openssl-devel libxslt-devel git nginx-mod-stream tar vim unzip
 }
 
 startFirewall() {
@@ -115,7 +115,7 @@ installFrps() {
 
 configFrps() {
   console $GREEN "配置 Frp 服务端 ..."
-  cat > /etc/frp/frps.ini <<-EOF
+  cat > /etc/frp/frps.ini <<-"EOF"
 [common]
 bind_addr = 0.0.0.0
 bind_port = 9000
@@ -180,7 +180,7 @@ buildXingshuoSSL() {
 
 configXingBaifangTrojan() {
   console $GREEN "配置 tro-go.xingbaifang.com"
-  cat > /etc/trojan-go/config.json <<-EOF
+  cat > /etc/trojan-go/config.json <<-"EOF"
 {
   "run_type": "server",
   "local_addr": "0.0.0.0",
@@ -212,11 +212,13 @@ configXingBaifangTrojan() {
   }
 }
 EOF
+  console $GREEN "启动Trojan-Go服务"
+  systemctl restart trojan-go
 }
 
 configXingshuoTrojan() {
   console $GREEN "配置 tro-go.xingshuo.me"
-  cat > /etc/trojan-go/config.json <<-EOF
+  cat > /etc/trojan-go/config.json <<-"EOF"
 {
   "run_type": "server",
   "local_addr": "0.0.0.0",
@@ -248,6 +250,8 @@ configXingshuoTrojan() {
   }
 }
 EOF
+  console $GREEN "启动Trojan-Go服务"
+  systemctl restart trojan-go
 }
 
 configXingBaifangNginx() {
@@ -336,11 +340,13 @@ server {
   client_max_body_size 1024m;
 }
 EOF
+  console $GREEN "重启 Nginx"
+  nginx -s reload
 }
 
 configXingshuoNginx() {
   console $GREEN "配置 xingshuo.me Nginx"
-  cat > /etc/nginx/nginx.conf<<-EOF
+  cat > /etc/nginx/nginx.conf<<-"EOF"
   load_module /usr/lib64/nginx/modules/ngx_stream_module.so;
   user  root;
   worker_processes  auto;
@@ -402,8 +408,7 @@ configXingshuoNginx() {
     include /etc/nginx/conf.d/*.conf;
   }
 EOF
-cat > /etc/nginx/conf.d/xingshuo.me.conf<<-EOF
-  limit_req_zone $binary_remote_addr zone=mylimit:10m rate=2r/s;
+cat > /etc/nginx/conf.d/xingshuo.me.conf<<-"EOF"
   server {
     listen 80;
     server_name xingshuo.me www.xingshuo.me;
@@ -438,7 +443,7 @@ cat > /etc/nginx/conf.d/xingshuo.me.conf<<-EOF
     client_max_body_size 50m;
   }
 EOF
-cat > /etc/nginx/conf.d/frp.xingshuo.me.conf<<-EOF
+cat > /etc/nginx/conf.d/frp.xingshuo.me.conf<<-"EOF"
 server {
   listen 80;
   server_name frp.xingshuo.me;
@@ -459,7 +464,7 @@ server {
   client_max_body_size 50m;
 }
 EOF
-cat > /etc/nginx/conf.d/wildcard.frp.xingshuo.me.conf<<-EOF
+cat > /etc/nginx/conf.d/wildcard.frp.xingshuo.me.conf<<-"EOF"
 upstream printer {
   server 127.0.0.1:9011;
 }
@@ -491,6 +496,8 @@ server {
   client_max_body_size 50m;
 }
 EOF
+  console $GREEN "重启 Nginx"
+  nginx -s reload
 }
 
 installBasePackage() {
@@ -527,18 +534,14 @@ menu() {
       configFrps
       ;;
     3)
-      #buildXingBaifangSSL
-      #configXingBaifangTrojan
+      buildXingBaifangSSL
+      configXingBaifangTrojan
       configXingBaifangNginx
-      systemctl restart trojan-go
-      nginx -s reload
       ;;
     4)
       buildXingshuoSSL
       configXingshuoTrojan
       configXingshuoNginx
-      systemctl restart trojan-go
-      nginx -s reload
       ;;
     *)
       echo -e "$RED 请选择正确的操作！${PLAIN}"
