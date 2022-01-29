@@ -311,8 +311,7 @@ configXingBaifangNginx() {
     include /etc/nginx/conf.d/*.conf;
   }
 EOF
-cat > /etc/nginx/conf.d/xingbaifang.com.conf<<-EOF
-limit_req_zone $binary_remote_addr zone=mylimit:10m rate=2r/s;
+cat > /etc/nginx/conf.d/xingbaifang.com.conf<<-"EOF"
 server {
   listen 80;
   server_name xingbaifang.com www.xingbaifang.com;
