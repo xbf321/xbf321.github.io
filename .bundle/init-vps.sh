@@ -253,6 +253,7 @@ EOF
 configXingBaifangNginx() {
   console $GREEN "配置 xingbaifang.com Nginx"
   cat > /etc/nginx/nginx.conf<<-EOF
+  load_module /usr/lib64/nginx/modules/ngx_stream_module.so;
   user  root;
   worker_processes  auto;
   error_log  /var/log/nginx/error.log notice;
@@ -341,6 +342,7 @@ EOF
 configXingshuoNginx() {
   console $GREEN "配置 xingshuo.me Nginx"
   cat > /etc/nginx/nginx.conf<<-EOF
+  load_module /usr/lib64/nginx/modules/ngx_stream_module.so;
   user  root;
   worker_processes  auto;
   error_log  /var/log/nginx/error.log notice;
